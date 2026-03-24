@@ -1,0 +1,17 @@
+C:\Users\HBDELL\OneDrive\Documents\FPTU\SP2026\PRN232\Project\LibraryManagement\LMS.Application\bin\Debug\net8.0\LMS.Application.deps.json
+C:\Users\HBDELL\OneDrive\Documents\FPTU\SP2026\PRN232\Project\LibraryManagement\LMS.Application\bin\Debug\net8.0\LMS.Application.dll
+C:\Users\HBDELL\OneDrive\Documents\FPTU\SP2026\PRN232\Project\LibraryManagement\LMS.Application\bin\Debug\net8.0\LMS.Application.pdb
+C:\Users\HBDELL\OneDrive\Documents\FPTU\SP2026\PRN232\Project\LibraryManagement\LMS.Application\bin\Debug\net8.0\LMS.Domain.dll
+C:\Users\HBDELL\OneDrive\Documents\FPTU\SP2026\PRN232\Project\LibraryManagement\LMS.Application\bin\Debug\net8.0\LMS.Infrastructure.dll
+C:\Users\HBDELL\OneDrive\Documents\FPTU\SP2026\PRN232\Project\LibraryManagement\LMS.Application\bin\Debug\net8.0\LMS.Domain.pdb
+C:\Users\HBDELL\OneDrive\Documents\FPTU\SP2026\PRN232\Project\LibraryManagement\LMS.Application\bin\Debug\net8.0\LMS.Infrastructure.pdb
+C:\Users\HBDELL\OneDrive\Documents\FPTU\SP2026\PRN232\Project\LibraryManagement\LMS.Application\obj\Debug\net8.0\LMS.Application.csproj.AssemblyReference.cache
+C:\Users\HBDELL\OneDrive\Documents\FPTU\SP2026\PRN232\Project\LibraryManagement\LMS.Application\obj\Debug\net8.0\LMS.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\HBDELL\OneDrive\Documents\FPTU\SP2026\PRN232\Project\LibraryManagement\LMS.Application\obj\Debug\net8.0\LMS.Application.AssemblyInfoInputs.cache
+C:\Users\HBDELL\OneDrive\Documents\FPTU\SP2026\PRN232\Project\LibraryManagement\LMS.Application\obj\Debug\net8.0\LMS.Application.AssemblyInfo.cs
+C:\Users\HBDELL\OneDrive\Documents\FPTU\SP2026\PRN232\Project\LibraryManagement\LMS.Application\obj\Debug\net8.0\LMS.Application.csproj.CoreCompileInputs.cache
+C:\Users\HBDELL\OneDrive\Documents\FPTU\SP2026\PRN232\Project\LibraryManagement\LMS.Application\obj\Debug\net8.0\LMS.Appl.3451E0AD.Up2Date
+C:\Users\HBDELL\OneDrive\Documents\FPTU\SP2026\PRN232\Project\LibraryManagement\LMS.Application\obj\Debug\net8.0\LMS.Application.dll
+C:\Users\HBDELL\OneDrive\Documents\FPTU\SP2026\PRN232\Project\LibraryManagement\LMS.Application\obj\Debug\net8.0\refint\LMS.Application.dll
+C:\Users\HBDELL\OneDrive\Documents\FPTU\SP2026\PRN232\Project\LibraryManagement\LMS.Application\obj\Debug\net8.0\LMS.Application.pdb
+C:\Users\HBDELL\OneDrive\Documents\FPTU\SP2026\PRN232\Project\LibraryManagement\LMS.Application\obj\Debug\net8.0\ref\LMS.Application.dll

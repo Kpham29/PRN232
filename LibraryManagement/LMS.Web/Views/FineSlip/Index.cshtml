@@ -1,0 +1,49 @@
+@model List<FineSlipVm>
+@{ ViewData["Title"] = "Phiếu phạt"; }
+<h4 class="mb-3"><i class="bi bi-exclamation-triangle me-1"></i> Phiếu phạt</h4>
+<table class="table table-bordered table-sm">
+    <thead class="table-dark">
+        <tr>
+            <th>Mã phiếu</th><th>Độc giả</th><th>Lý do</th>
+            <th>Tiền phạt</th><th>Điều chỉnh</th><th>Thực thu</th>
+            <th>Trạng thái</th><th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var f in Model) {
+        <tr>
+            <td><code class="small">@f.SlipCode</code></td>
+            <td>@f.ReaderName</td>
+            <td>@f.Reason</td>
+            <td>@f.FineAmount.ToString("N0") đ</td>
+            <td>@(f.AdjustedAmount.HasValue ? f.AdjustedAmount.Value.ToString("N0")+" đ" : "—")</td>
+            <td><strong>@f.ActualAmount.ToString("N0") đ</strong></td>
+            <td>
+                <span class="badge bg-@(f.Status=="Paid"?"success":"warning text-dark")">
+                    @(f.Status == "Paid" ? "Đã nộp" : "Chưa nộp")
+                </span>
+            </td>
+            <td>
+                @if (f.Status == "Unpaid") {
+                    <div class="d-flex gap-1 flex-column">
+                        <form asp-action="Adjust" asp-route-id="@f.Id" method="post"
+                              class="d-flex gap-1">
+                            <input type="number" name="newAmount" value="@f.ActualAmount"
+                                   class="form-control form-control-sm" style="width:100px"/>
+                            <button class="btn btn-sm btn-outline-warning">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                        </form>
+                        <form asp-action="MarkPaid" asp-route-id="@f.Id" method="post">
+                            <button class="btn btn-sm btn-success w-100"
+                                    onclick="return confirm('Xác nhận đã thu @f.ActualAmount.ToString("N0")đ?')">
+                                <i class="bi bi-check-lg me-1"></i> Đã thu tiền
+                            </button>
+                        </form>
+                    </div>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

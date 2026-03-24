@@ -1,0 +1,50 @@
+@using LMS.Web.Models
+@model List<BorrowRequestVm>
+@{ ViewData["Title"] = "Yêu cầu của tôi"; }
+
+<div class="mb-3 d-flex justify-content-between align-items-center">
+    <h4 class="mb-0"><i class="bi bi-clock-history me-1"></i> Yêu cầu mượn sách của tôi</h4>
+    <a asp-controller="Book" asp-action="Index" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-lg me-1"></i> Mượn thêm sách
+    </a>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-3">Ngày yêu cầu</th>
+                        <th>Sách</th>
+                        <th>Ghi chú</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any()) {
+                        <tr><td colspan="4" class="text-center py-4 text-muted">Bạn chưa có yêu cầu mượn sách nào.</td></tr>
+                    }
+                    @foreach (var r in Model) {
+                        <tr>
+                            <td class="ps-3 small">@r.RequestedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td class="fw-bold">@r.BookTitle</td>
+                            <td><span class="text-muted small">@(r.Note ?? "—")</span></td>
+                            <td>
+                                @if (r.Status == "Pending") {
+                                    <span class="badge bg-warning text-dark"><i class="bi bi-hourglass-split me-1"></i>Đang chờ duyệt</span>
+                                } else if (r.Status == "Approved") {
+                                    <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Đã duyệt</span>
+                                } else if (r.Status == "Rejected") {
+                                    <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Từ chối</span>
+                                } else {
+                                    <span class="badge bg-secondary">@r.Status</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

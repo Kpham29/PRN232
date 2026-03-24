@@ -1,0 +1,42 @@
+@model ReaderVm
+@{ ViewData["Title"] = "Chi tiết độc giả"; }
+
+<div class="mb-3">
+    <a asp-action="Index" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Quay lại danh sách
+    </a>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0"><i class="bi bi-person-badge me-1"></i> Thông tin thẻ độc giả</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Mã thẻ:</strong> <span class="badge bg-secondary font-monospace">@Model.CardNumber</span></p>
+                <p><strong>Họ tên:</strong> @Model.FullName</p>
+                <p><strong>Giới tính:</strong> @(Model.Gender == "Male" ? "Nam" : "Nữ")</p>
+                <p><strong>Số điện thoại:</strong> @(Model.Phone ?? "—")</p>
+                <p><strong>Địa chỉ:</strong> @(Model.Address ?? "—")</p>
+            </div>
+            <div class="col-md-6 text-end">
+                <p><strong>Ngày cấp:</strong> @Model.CardIssuedDate.ToString("dd/MM/yyyy")</p>
+                <p><strong>Ngày hết hạn:</strong> <span class="text-@(Model.IsCardValid ? "success" : "danger") fw-bold">@Model.CardExpiredDate.ToString("dd/MM/yyyy")</span></p>
+                <p><strong>Trình trạng:</strong> 
+                    @if(Model.IsCardValid) {
+                        <span class="badge bg-success">Đang hoạt động</span>
+                    } else {
+                        <span class="badge bg-danger">Hết hạn</span>
+                    }
+                </p>
+
+                <form asp-action="RenewCard" asp-route-id="@Model.Id" method="post" class="mt-3">
+                    <button type="submit" class="btn btn-warning" onclick="return confirm('Xác nhận gia hạn thẻ này thêm 1 năm?');">
+                        <i class="bi bi-arrow-clockwise me-1"></i>Gia hạn thẻ
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

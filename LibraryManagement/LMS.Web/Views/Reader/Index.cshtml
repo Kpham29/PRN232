@@ -1,0 +1,52 @@
+@model List<ReaderVm>
+@{ ViewData["Title"] = "Danh sách độc giả"; }
+
+<h4 class="mb-3"><i class="bi bi-people me-1"></i> Quản lý độc giả</h4>
+
+<form method="get" class="row g-2 mb-4">
+    <div class="col-md-6">
+        <input name="search" value="@ViewBag.Search" class="form-control form-control-sm"
+               placeholder="Tìm theo tên đăng nhập hoặc số thẻ..."/>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary btn-sm w-100">Tìm kiếm</button>
+    </div>
+    <div class="col-md-2">
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm w-100">Xóa lọc</a>
+    </div>
+</form>
+
+<table class="table table-bordered table-hover table-sm">
+    <thead class="table-dark">
+        <tr>
+            <th>Mã thẻ</th>
+            <th>Họ và tên</th>
+            <th>Giới tính</th>
+            <th>SĐT</th>
+            <th>Trạng thái thẻ</th>
+            <th>Hạn thẻ</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach(var r in Model) {
+        <tr class="@(!r.IsCardValid ? "table-warning" : "")">
+            <td><code class="small">@r.CardNumber</code></td>
+            <td>@r.FullName</td>
+            <td>@(r.Gender == "Male" ? "Nam" : "Nữ")</td>
+            <td>@r.Phone</td>
+            <td>
+                @if(r.IsCardValid) {
+                    <span class="badge bg-success">Hợp lệ</span>
+                } else {
+                    <span class="badge bg-danger">Hết hạn</span>
+                }
+            </td>
+            <td>@r.CardExpiredDate.ToString("dd/MM/yyyy")</td>
+            <td class="text-center">
+                <a asp-action="Detail" asp-route-id="@r.Id" class="btn btn-sm btn-outline-primary">Chi tiết</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

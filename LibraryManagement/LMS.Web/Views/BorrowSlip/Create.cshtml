@@ -1,0 +1,159 @@
+@model CreateBorrowSlipVm
+@{ ViewData["Title"] = "Tạo phiếu mượn"; }
+
+<div class="d-flex justify-content-center">
+    <div class="card shadow-sm w-100" style="max-width: 700px;">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Tạo phiếu mượn mới</h5>
+        </div>
+        <div class="card-body">
+            @if (TempData["Error"] != null) {
+                <div class="alert alert-danger">@TempData["Error"]</div>
+            }
+
+            <form asp-action="Create" method="post" id="borrowForm">
+                <div class="mb-3">
+                    <label class="form-label">Chọn Độc giả <span class="text-danger">*</span></label>
+                    <div class="d-flex gap-2 align-items-start">
+                        <select asp-for="ReaderId" class="form-select flex-grow-1" required onchange="onReaderChange(this.value)">
+                            <option value="">-- Chọn độc giả --</option>
+                            @foreach (var r in Model.ReaderList)
+                            {
+                                <option value="@r.Id">@r.CardNumber - @r.FullName (@r.Phone)</option>
+                            }
+                        </select>
+                    </div>
+                    <div id="readerInfo" class="mt-2 p-3 bg-light rounded border" style="display:none">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="small text-muted">Trình trạng thẻ: <span id="cardStatus" class="fw-bold"></span></div>
+                                <div class="small text-muted">Hết hạn: <span id="cardExpiry" class="fw-bold"></span></div>
+                            </div>
+                            <button type="button" id="btnQuickRenew" class="btn btn-sm btn-warning" style="display:none" onclick="quickRenew()">
+                                <i class="bi bi-arrow-clockwise me-1"></i>Gia hạn nhanh
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Thêm sách mượn <span class="text-danger">*</span></label>
+                    <div class="d-flex gap-2 mb-2">
+                        <select id="bookSelect" class="form-select">
+                            <option value="">-- Chọn sách --</option>
+                            @foreach (var b in Model.BookList)
+                            {
+                                <option value="@b.Id" data-title="@b.Title">@b.Title (Còn @b.AvailableQuantity)</option>
+                            }
+                        </select>
+                        <input type="number" id="bookQty" class="form-control" style="width: 80px" value="1" min="1" />
+                        <button type="button" class="btn btn-outline-secondary" onclick="addBook()">Thêm</button>
+                    </div>
+                    
+                    <table class="table table-bordered table-sm mt-3" id="bookTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Tên sách</th>
+                                <th style="width: 100px">Số lượng</th>
+                                <th style="width: 60px"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Chứa input hidden -->
+                        </tbody>
+                    </table>
+                    <div id="emptyNotice" class="text-center text-muted small py-2">Chưa chọn sách nào</div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Tạo phiếu mượn</button>
+                    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    let itemIndex = 0;
+    function addBook() {
+        const select = document.getElementById('bookSelect');
+        const qtyHtml = document.getElementById('bookQty');
+        const bookId = select.value;
+        const bookTitle = select.options[select.selectedIndex]?.getAttribute('data-title');
+        const qty = parseInt(qtyHtml.value);
+
+        if (!bookId || qty < 1) return;
+
+        const tbody = document.querySelector('#bookTable tbody');
+        
+        // Kiem tra da co row chua
+        if (tbody.querySelector(`tr[data-id="${bookId}"]`)) {
+            alert('Sách này đã được thêm.');
+            return;
+        }
+
+        const tr = document.createElement('tr');
+        tr.setAttribute('data-id', bookId);
+        tr.innerHTML = `
+            <td>
+                ${bookTitle}
+                <input type="hidden" name="Items[${itemIndex}].BookId" value="${bookId}" />
+            </td>
+            <td>
+                <input type="number" name="Items[${itemIndex}].Quantity" value="${qty}" class="form-control form-control-sm" readonly />
+            </td>
+            <td class="text-center">
+                <button type="button" class="btn btn-sm btn-danger py-0 px-1" onclick="this.closest('tr').remove(); updateNotice();"><i class="bi bi-x"></i></button>
+            </td>
+        `;
+
+        tbody.appendChild(tr);
+        itemIndex++;
+        select.value = '';
+        qtyHtml.value = '1';
+        updateNotice();
+    }
+    function updateNotice() {
+        const hasRows = document.querySelector('#bookTable tbody').children.length > 0;
+        document.getElementById('emptyNotice').style.display = hasRows ? 'none' : 'block';
+    }
+
+    async function onReaderChange(id) {
+        const infoDiv = document.getElementById('readerInfo');
+        const btnRenew = document.getElementById('btnQuickRenew');
+        if (!id) { infoDiv.style.display = 'none'; return; }
+        
+        try {
+            const res = await fetch('@Url.Action("GetJson", "Reader")/' + id);
+            if (res.ok) {
+                const r = await res.json();
+                infoDiv.style.display = 'block';
+                const statusSpan = document.getElementById('cardStatus');
+                const expirySpan = document.getElementById('cardExpiry');
+                
+                const expiryDate = new Date(r.cardExpiredDate);
+                const isValid = expiryDate > new Date();
+                
+                statusSpan.textContent = isValid ? 'Hợp lệ' : 'Hết hạn';
+                statusSpan.className = isValid ? 'fw-bold text-success' : 'fw-bold text-danger';
+                expirySpan.textContent = expiryDate.toLocaleDateString('vi-VN');
+                
+                btnRenew.style.display = isValid ? 'none' : 'block';
+            }
+        } catch (e) { console.error(e); }
+    }
+
+    async function quickRenew() {
+        const id = document.getElementById('ReaderId').value;
+        if (!id || !confirm('Gia hạn thẻ độc giả này thêm 1 năm?')) return;
+        
+        const res = await fetch('@Url.Action("RenewCard", "Reader")/' + id, { method: 'POST' });
+        if (res.ok) {
+            alert('Gia hạn thành công!');
+            onReaderChange(id); // Reload info
+        } else {
+            alert('Lỗi gia hạn.');
+        }
+    }
+</script>

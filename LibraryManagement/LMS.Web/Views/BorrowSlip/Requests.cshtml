@@ -1,0 +1,140 @@
+@using LMS.Web.Models
+@model List<BorrowRequestVm>
+@{ ViewData["Title"] = "Yêu cầu mượn sách"; }
+
+<h4 class="mb-4"><i class="bi bi-envelope-paper me-1"></i> Danh sách yêu cầu mượn sách</h4>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-3">Ngày yêu cầu</th>
+                        <th>Độc giả</th>
+                        <th>Sách</th>
+                        <th>Ghi chú</th>
+                        <th class="text-end pe-3">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any()) {
+                        <tr><td colspan="5" class="text-center py-4 text-muted">Hiện không có yêu cầu nào đang chờ.</td></tr>
+                    }
+                    @foreach (var r in Model) {
+                        <tr>
+                            <td class="ps-3 small">@r.RequestedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td><span class="fw-bold">@r.ReaderName</span></td>
+                            <td>@r.BookTitle</td>
+                            <td><span class="text-muted small">@(r.Note ?? "—")</span></td>
+                            <td class="text-end pe-3">
+                                <div class="d-flex justify-content-end gap-2">
+                                    <button type="button" class="btn btn-sm btn-success" 
+                                            onclick="openApproveModal(@r.Id, '@r.ReaderName', '@r.BookTitle', @r.ReaderId)">
+                                        Duyệt
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" 
+                                            onclick="rejectRequest(@r.Id)">
+                                        Từ chối
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Duyệt yêu cầu -->
+<div class="modal fade" id="approveModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form asp-action="ApproveRequest" method="post">
+            <input type="hidden" name="id" id="approveRequestId" />
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">Xác nhận duyệt yêu cầu</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-3">Bạn đang duyệt yêu cầu của <strong><span id="approveReaderName"></span></strong> cho sách <strong><span id="approveBookTitle"></span></strong>.</p>
+                    
+                    <div id="approveCardWarning" class="alert alert-danger mb-3" style="display:none">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <strong>Cảnh báo:</strong> Thẻ của độc giả này đã hết hạn (<span id="approveCardExpiry"></span>)!
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Ngày mượn</label>
+                        <input type="date" name="borrowedAt" class="form-control" id="borrowedAtInput" required />
+                    </div>
+                    
+                    <div class="mb-0">
+                        <label class="form-label small fw-bold">Ngày hẹn trả</label>
+                        <input type="date" name="dueDate" class="form-control" id="dueDateInput" required />
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-success">Xác nhận & Tạo phiếu mượn</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        async function openApproveModal(id, readerName, bookTitle, readerId) {
+            document.getElementById('approveRequestId').value = id;
+            document.getElementById('approveReaderName').textContent = readerName;
+            document.getElementById('approveBookTitle').textContent = bookTitle;
+            
+            const warningDiv = document.getElementById('approveCardWarning');
+            warningDiv.style.display = 'none';
+
+            if (readerId) {
+                try {
+                    const res = await fetch('@Url.Action("GetJson", "Reader")/' + readerId);
+                    if (res.ok) {
+                        const r = await res.json();
+                        const expiryDate = new Date(r.cardExpiredDate);
+                        if (expiryDate <= new Date()) {
+                            warningDiv.style.display = 'block';
+                            document.getElementById('approveCardExpiry').textContent = expiryDate.toLocaleDateString('vi-VN');
+                        }
+                    }
+                } catch (e) { console.error(e); }
+            }
+            
+            // Set default dates (today and 14 days later)
+            const today = new Date();
+            const due = new Date();
+            due.setDate(today.getDate() + 14);
+            
+            document.getElementById('borrowedAtInput').value = today.toISOString().split('T')[0];
+            document.getElementById('dueDateInput').value = due.toISOString().split('T')[0];
+            
+            new bootstrap.Modal(document.getElementById('approveModal')).show();
+        }
+
+        function rejectRequest(id) {
+            const reason = prompt("Vui lòng nhập lý do từ chối (bắt buộc):");
+            if (reason === null || reason.trim() === "") return;
+            
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '@Url.Action("RejectRequest")/' + id;
+            
+            const reasonInput = document.createElement('input');
+            reasonInput.type = 'hidden';
+            reasonInput.name = 'reason';
+            reasonInput.value = reason;
+            
+            form.appendChild(reasonInput);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    </script>
+}

@@ -1,0 +1,129 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = LMS.Web
+build_property.RootNamespace = LMS.Web
+build_property.ProjectDir = C:\Users\HBDELL\OneDrive\Documents\FPTU\SP2026\PRN232\Project\LibraryManagement\LMS.Web\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\HBDELL\OneDrive\Documents\FPTU\SP2026\PRN232\Project\LibraryManagement\LMS.Web
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 
+
+[C:/Users/HBDELL/OneDrive/Documents/FPTU/SP2026/PRN232/Project/LibraryManagement/LMS.Web/Views/Account/CreateLibrarian.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxDcmVhdGVMaWJyYXJpYW4uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HBDELL/OneDrive/Documents/FPTU/SP2026/PRN232/Project/LibraryManagement/LMS.Web/Views/Account/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HBDELL/OneDrive/Documents/FPTU/SP2026/PRN232/Project/LibraryManagement/LMS.Web/Views/Auth/ChangePassword.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxDaGFuZ2VQYXNzd29yZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HBDELL/OneDrive/Documents/FPTU/SP2026/PRN232/Project/LibraryManagement/LMS.Web/Views/Auth/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxMb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HBDELL/OneDrive/Documents/FPTU/SP2026/PRN232/Project/LibraryManagement/LMS.Web/Views/Auth/Register.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxSZWdpc3Rlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HBDELL/OneDrive/Documents/FPTU/SP2026/PRN232/Project/LibraryManagement/LMS.Web/Views/Book/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va1xDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HBDELL/OneDrive/Documents/FPTU/SP2026/PRN232/Project/LibraryManagement/LMS.Web/Views/Book/Detail.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va1xEZXRhaWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HBDELL/OneDrive/Documents/FPTU/SP2026/PRN232/Project/LibraryManagement/LMS.Web/Views/Book/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HBDELL/OneDrive/Documents/FPTU/SP2026/PRN232/Project/LibraryManagement/LMS.Web/Views/Book/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HBDELL/OneDrive/Documents/FPTU/SP2026/PRN232/Project/LibraryManagement/LMS.Web/Views/BorrowSlip/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9ycm93U2xpcFxDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HBDELL/OneDrive/Documents/FPTU/SP2026/PRN232/Project/LibraryManagement/LMS.Web/Views/BorrowSlip/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9ycm93U2xpcFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HBDELL/OneDrive/Documents/FPTU/SP2026/PRN232/Project/LibraryManagement/LMS.Web/Views/BorrowSlip/Mine.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9ycm93U2xpcFxNaW5lLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HBDELL/OneDrive/Documents/FPTU/SP2026/PRN232/Project/LibraryManagement/LMS.Web/Views/BorrowSlip/MyRequests.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9ycm93U2xpcFxNeVJlcXVlc3RzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HBDELL/OneDrive/Documents/FPTU/SP2026/PRN232/Project/LibraryManagement/LMS.Web/Views/BorrowSlip/Requests.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9ycm93U2xpcFxSZXF1ZXN0cy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HBDELL/OneDrive/Documents/FPTU/SP2026/PRN232/Project/LibraryManagement/LMS.Web/Views/FineSlip/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmluZVNsaXBcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HBDELL/OneDrive/Documents/FPTU/SP2026/PRN232/Project/LibraryManagement/LMS.Web/Views/FineSlip/Mine.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmluZVNsaXBcTWluZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HBDELL/OneDrive/Documents/FPTU/SP2026/PRN232/Project/LibraryManagement/LMS.Web/Views/Home/Dashboard.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxEYXNoYm9hcmQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HBDELL/OneDrive/Documents/FPTU/SP2026/PRN232/Project/LibraryManagement/LMS.Web/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HBDELL/OneDrive/Documents/FPTU/SP2026/PRN232/Project/LibraryManagement/LMS.Web/Views/Home/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HBDELL/OneDrive/Documents/FPTU/SP2026/PRN232/Project/LibraryManagement/LMS.Web/Views/Reader/Detail.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVhZGVyXERldGFpbC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HBDELL/OneDrive/Documents/FPTU/SP2026/PRN232/Project/LibraryManagement/LMS.Web/Views/Reader/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVhZGVyXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HBDELL/OneDrive/Documents/FPTU/SP2026/PRN232/Project/LibraryManagement/LMS.Web/Views/Reader/MyProfile.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVhZGVyXE15UHJvZmlsZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HBDELL/OneDrive/Documents/FPTU/SP2026/PRN232/Project/LibraryManagement/LMS.Web/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HBDELL/OneDrive/Documents/FPTU/SP2026/PRN232/Project/LibraryManagement/LMS.Web/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HBDELL/OneDrive/Documents/FPTU/SP2026/PRN232/Project/LibraryManagement/LMS.Web/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HBDELL/OneDrive/Documents/FPTU/SP2026/PRN232/Project/LibraryManagement/LMS.Web/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/HBDELL/OneDrive/Documents/FPTU/SP2026/PRN232/Project/LibraryManagement/LMS.Web/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-mfvf03eb9m

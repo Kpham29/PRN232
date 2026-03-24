@@ -1,0 +1,32 @@
+@model List<FineSlipVm>
+@{ ViewData["Title"] = "Phiếu phạt của tôi"; }
+<h4 class="mb-3"><i class="bi bi-exclamation-triangle me-1"></i> Phiếu phạt của tôi</h4>
+<table class="table table-bordered table-sm">
+    <thead class="table-dark">
+        <tr>
+            <th>Mã phiếu</th><th>Lý do</th>
+            <th>Tiền phạt</th><th>Điều chỉnh</th><th>Thực phải nộp</th>
+            <th>Trạng thái</th><th>Ngày nộp</th>
+        </tr>
+    </thead>
+    <tbody>
+    @if(!Model.Any()) {
+        <tr><td colspan="7" class="text-center">Bạn không có phiếu phạt nào.</td></tr>
+    }
+    @foreach (var f in Model) {
+        <tr>
+            <td><code class="small">@f.SlipCode</code></td>
+            <td>@f.Reason</td>
+            <td>@f.FineAmount.ToString("N0") đ</td>
+            <td>@(f.AdjustedAmount.HasValue ? f.AdjustedAmount.Value.ToString("N0")+" đ" : "—")</td>
+            <td class="text-danger fw-bold">@f.ActualAmount.ToString("N0") đ</td>
+            <td>
+                <span class="badge bg-@(f.Status=="Paid"?"success":"warning text-dark")">
+                    @(f.Status == "Paid" ? "Đã nộp" : "Chưa nộp")
+                </span>
+            </td>
+            <td>@(f.PaidAt?.ToString("dd/MM/yyyy") ?? "—")</td>
+        </tr>
+    }
+    </tbody>
+</table>

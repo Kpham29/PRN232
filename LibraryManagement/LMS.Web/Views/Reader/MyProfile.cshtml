@@ -1,0 +1,73 @@
+@model ReaderVm
+@{ ViewData["Title"] = "Hồ sơ của tôi"; }
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-4 border-0">
+            <div class="card-header bg-primary text-white py-3 d-flex align-items-center justify-content-between">
+                <h5 class="mb-0"><i class="bi bi-person-badge me-2"></i> Hồ sơ cá nhân</h5>
+                <span class="badge bg-light text-primary">ID: @Model.CardNumber</span>
+            </div>
+            <div class="card-body p-4">
+                <div class="row g-4">
+                    <div class="col-md-6 border-end">
+                        <h6 class="text-muted text-uppercase small fw-bold mb-3">Thông tin cơ bản</h6>
+                        <div class="mb-3">
+                            <label class="text-muted small d-block">Họ và tên</label>
+                            <span class="fw-bold fs-5">@Model.FullName</span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="text-muted small d-block">Giới tính</label>
+                            <span>@(Model.Gender == "Male" ? "Nam" : "Nữ")</span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="text-muted small d-block">Số điện thoại</label>
+                            <span>@(Model.Phone ?? "—")</span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="text-muted small d-block">Địa chỉ</label>
+                            <span>@(Model.Address ?? "—")</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 ps-md-4">
+                        <h6 class="text-muted text-uppercase small fw-bold mb-3">Thông tin thẻ thư viện</h6>
+                        <div class="mb-3">
+                            <label class="text-muted small d-block">Ngày cấp thẻ</label>
+                            <span>@Model.CardIssuedDate.ToString("dd/MM/yyyy")</span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="text-muted small d-block">Ngày hết hạn</label>
+                            <span class="text-@(Model.IsCardValid ? "success" : "danger") fw-bold">
+                                @Model.CardExpiredDate.ToString("dd/MM/yyyy")
+                            </span>
+                        </div>
+                        <div class="mb-4">
+                            <label class="text-muted small d-block">Trạng thái thẻ</label>
+                            @if(Model.IsCardValid) {
+                                <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Đang hoạt động</span>
+                            } else {
+                                <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Đã hết hạn</span>
+                            }
+                        </div>
+                        
+                        <div class="alert alert-info py-2 px-3 small">
+                            <i class="bi bi-info-circle me-1"></i> Gia hạn thẻ sẽ cộng thêm 1 năm kể từ thời điểm hiện tại.
+                        </div>
+
+                        <form asp-action="RenewMyCard" method="post">
+                            <button type="submit" class="btn btn-warning w-100 fw-bold" 
+                                    onclick="return confirm('Xác nhận tự gia hạn thẻ thêm 1 năm?');">
+                                <i class="bi bi-arrow-clockwise me-1"></i>Gia hạn thẻ ngay
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-light p-3 text-center">
+                <a asp-controller="Auth" asp-action="ChangePassword" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-shield-lock me-1"></i>Đổi mật khẩu bảo mật
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

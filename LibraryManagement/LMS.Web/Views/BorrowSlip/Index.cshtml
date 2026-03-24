@@ -1,0 +1,68 @@
+@model List<BorrowSlipVm>
+@{ ViewData["Title"] = "Phiếu mượn"; }
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0"><i class="bi bi-clipboard-check me-1"></i> Phiếu mượn</h4>
+    <div class="d-flex gap-2">
+        <a asp-action="Index" asp-route-status="Borrowing"
+           class="btn btn-sm @(ViewBag.Status=="Borrowing"?"btn-primary":"btn-outline-primary")">
+            Đang mượn
+        </a>
+        <a asp-action="Index" asp-route-status="Overdue"
+           class="btn btn-sm @(ViewBag.Status=="Overdue"?"btn-danger":"btn-outline-danger")">
+            Quá hạn
+        </a>
+        <a asp-action="Index" asp-route-status="Returned"
+           class="btn btn-sm @(ViewBag.Status=="Returned"?"btn-success":"btn-outline-success")">
+            Đã trả
+        </a>
+        <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Tất cả</a>
+        @if (Context.Session.GetString("role") == "Librarian") {
+            <a asp-action="Create" class="btn btn-sm btn-primary">
+                <i class="bi bi-plus-lg me-1"></i> Tạo phiếu mượn
+            </a>
+        }
+    </div>
+</div>
+
+<table class="table table-bordered table-hover table-sm">
+    <thead class="table-dark">
+        <tr>
+            <th>Mã phiếu</th><th>Độc giả</th><th>Số thẻ</th>
+            <th>Ngày mượn</th><th>Hạn trả</th><th>Ngày trả</th>
+            <th>Trạng thái</th><th>Sách mượn</th><th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var s in Model) {
+        <tr class="@(s.IsOverdue ? "table-danger" : s.Status=="Returned" ? "table-success" : "")">
+            <td><code class="small">@s.SlipCode</code></td>
+            <td>@s.ReaderName</td>
+            <td>@s.CardNumber</td>
+            <td>@s.BorrowedAt.ToString("dd/MM/yyyy")</td>
+            <td class="@(s.IsOverdue ? "fw-bold" : "")">@s.DueDate.ToString("dd/MM/yyyy")</td>
+            <td>@(s.ReturnedAt?.ToString("dd/MM/yyyy") ?? "—")</td>
+            <td>
+                <span class="badge bg-@(s.Status=="Borrowing"?"primary":s.Status=="Returned"?"success":"danger")">
+                    @s.Status
+                </span>
+                @if (s.HasFine) {
+                    <span class="badge bg-warning text-dark">
+                        Phạt @s.FineAmount?.ToString("N0")đ
+                    </span>
+                }
+            </td>
+            <td class="small text-muted">@string.Join(", ", s.Details.Select(d => $"{d.BookTitle} (x{d.Quantity})"))</td>
+            <td>
+                @if (s.Status is "Borrowing" or "Overdue") {
+                    <form asp-action="Return" asp-route-id="@s.Id" method="post">
+                        <button class="btn btn-sm btn-warning"
+                                onclick="return confirm('Xác nhận trả sách?')">
+                            <i class="bi bi-box-arrow-in-left"></i> Trả sách
+                        </button>
+                    </form>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

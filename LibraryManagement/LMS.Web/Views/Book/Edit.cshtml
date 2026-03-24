@@ -1,0 +1,97 @@
+@model BookFormVm
+@{ ViewData["Title"] = "Sửa sách"; }
+
+<div class="d-flex justify-content-center">
+    <div class="card shadow-sm w-100" style="max-width: 640px;">
+        <div class="card-header bg-warning text-dark">
+            <h5 class="mb-0">Cập nhật thông tin sách</h5>
+        </div>
+        <div class="card-body">
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger" asp-validation-summary="All"></div>
+            }
+
+            <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+                <input type="hidden" asp-for="Id" />
+                
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label">Tên sách <span class="text-danger">*</span></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger small"></span>
+                </div>
+                
+                <div class="row mb-3 g-2">
+                    <div class="col-md-6">
+                        <label asp-for="Author" class="form-label">Tác giả <span class="text-danger">*</span></label>
+                        <input asp-for="Author" class="form-control" />
+                        <span asp-validation-for="Author" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="PublishedYear" class="form-label">Năm xuất bản <span class="text-danger">*</span></label>
+                        <input asp-for="PublishedYear" class="form-control" type="number" />
+                        <span asp-validation-for="PublishedYear" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3 g-2">
+                    <div class="col-md-6">
+                        <label asp-for="CategoryId" class="form-label">Thể loại <span class="text-danger">*</span></label>
+                        <select asp-for="CategoryId" class="form-select">
+                            <option value="">-- Chọn thể loại --</option>
+                            @foreach (var cat in Model.Categories)
+                            {
+                                <option value="@cat.Id" selected="@(Model.CategoryId == cat.Id)">@cat.Name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="PublisherId" class="form-label">Nhà xuất bản <span class="text-danger">*</span></label>
+                        <select asp-for="PublisherId" class="form-select">
+                            <option value="">-- Chọn NXB --</option>
+                            @foreach (var pub in Model.Publishers)
+                            {
+                                <option value="@pub.Id" selected="@(Model.PublisherId == pub.Id)">@pub.Name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="PublisherId" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3 g-2">
+                    <div class="col-md-6">
+                        <label asp-for="Price" class="form-label">Giá (VNĐ) <span class="text-danger">*</span></label>
+                        <input asp-for="Price" class="form-control" type="number" step="1000" />
+                        <span asp-validation-for="Price" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="TotalQuantity" class="form-label">Tổng số lượng <span class="text-danger">*</span></label>
+                        <input asp-for="TotalQuantity" class="form-control" type="number" />
+                        <span asp-validation-for="TotalQuantity" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ISBN" class="form-label">Mã ISBN</label>
+                    <input asp-for="ISBN" class="form-control" />
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="CoverUrl" class="form-label">Đường dẫn ảnh bìa (URL)</label>
+                    <input asp-for="CoverUrl" class="form-control" placeholder="https://..." />
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Description" class="form-label">Mô tả</label>
+                    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-warning">Lưu thay đổi</button>
+                    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

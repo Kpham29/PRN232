@@ -1,0 +1,24 @@
+@{
+    ViewData["Title"] = "Trang chủ";
+}
+
+<div class="text-center mt-5">
+    <i class="bi bi-book text-primary" style="font-size: 4rem;"></i>
+    <h1 class="display-4 fw-bold mt-3">Chào mừng đến với LMS</h1>
+    <p class="lead text-muted">Hệ thống quản lý mượn trả sách thư viện hiện đại.</p>
+
+    @if (Context.Session.GetString("jwt") == null)
+    {
+        <div class="mt-4">
+            <a asp-controller="Auth" asp-action="Login" class="btn btn-primary btn-lg me-2">Đăng nhập</a>
+            <a asp-controller="Auth" asp-action="Register" class="btn btn-outline-primary btn-lg">Đăng ký độc giả</a>
+        </div>
+    }
+    else
+    {
+        <div class="mt-4">
+            <p>Bạn đã đăng nhập với vai trò <strong>@Context.Session.GetString("role")</strong>.</p>
+            <a asp-controller="Book" asp-action="Index" class="btn btn-primary btn-lg">Đi tới Danh mục sách</a>
+        </div>
+    }
+</div>
