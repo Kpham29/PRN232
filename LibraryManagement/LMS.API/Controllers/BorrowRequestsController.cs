@@ -29,7 +29,7 @@ public class BorrowRequestsController : ODataController
     {
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         var result = await _service.SubmitAsync(userId, dto);
-        return Created(result);
+        return StatusCode(201, result);
     }
 
     [HttpPut("{key}/approve"), Authorize(Roles = "Admin,Librarian")]

@@ -37,7 +37,7 @@ public class BorrowSlipsController : ODataController
     {
         var libId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         var result = await _service.CreateAsync(dto, libId);
-        return Created(result);
+        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
     }
 
     [HttpPut("{id}/return"), Authorize(Roles = "Admin,Librarian")]

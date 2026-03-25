@@ -21,6 +21,6 @@ public class PublishersController : ODataController
     public async Task<IActionResult> Post([FromBody] PublisherDto dto)
     {
         var result = await _service.CreateAsync(dto);
-        return Created(result);
+        return StatusCode(201, result);
     }
 }

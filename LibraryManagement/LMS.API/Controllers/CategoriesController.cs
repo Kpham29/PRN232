@@ -21,6 +21,6 @@ public class CategoriesController : ODataController
     public async Task<IActionResult> Post([FromBody] CategoryDto dto)
     {
         var result = await _service.CreateAsync(dto.Name);
-        return Created(result);
+        return StatusCode(201, result);
     }
 }
