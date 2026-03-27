@@ -105,8 +105,14 @@ public class BorrowSlipService : IBorrowSlipService
         var reader = await _readers.GetByIdAsync(dto.ReaderId)
             ?? throw new Exception("Reader not found");
 
+        if (!reader.IsCardActive)
+            throw new Exception($"Thẻ thư viện của độc giả {reader.FullName} đang bị khóa. Vui lòng mở khóa thẻ trước khi mượn.");
+
         if (reader.CardExpiredDate <= DateTime.UtcNow)
             throw new Exception($"Thẻ thư viện của độc giả {reader.FullName} đã hết hạn ({reader.CardExpiredDate:dd/MM/yyyy}). Vui lòng gia hạn trước khi mượn.");
+
+        if (dto.Books == null || dto.Books.Count == 0)
+            throw new Exception("Phiếu mượn phải có ít nhất 1 cuốn sách.");
 
         var borrowedAt = dto.BorrowedAt ?? DateTime.UtcNow;
         var dueDate = dto.DueDate ?? borrowedAt.AddDays(14);
@@ -130,6 +136,9 @@ public class BorrowSlipService : IBorrowSlipService
         // Check books available
         foreach (var item in dto.Books)
         {
+            if (item.Quantity <= 0)
+                throw new Exception("Số lượng sách mượn phải lớn hơn 0.");
+
             var book = await _books.GetByIdAsync(item.BookId)
                 ?? throw new Exception($"Book {item.BookId} not found");
             if (book.AvailableQuantity < item.Quantity)
