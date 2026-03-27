@@ -45,6 +45,12 @@ public class AccountService : IAccountService
 
     public async Task<AccountDto> CreateLibrarianAsync(CreateLibrarianDto dto)
     {
+        dto.Email = dto.Email.Trim();
+        dto.FullName = dto.FullName.Trim();
+
+        if (await _accounts.GetByEmailAsync(dto.Email) != null)
+            throw new Exception("Email already exists");
+
         var account = new Account
         {
             FullName     = dto.FullName,

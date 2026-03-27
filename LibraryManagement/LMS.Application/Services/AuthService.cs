@@ -28,10 +28,17 @@ public class AuthService : IAuthService
 
     public async Task<AuthResponseDto> RegisterAsync(RegisterDto dto)
     {
+        dto.Email = dto.Email.Trim();
+        dto.FullName = dto.FullName.Trim();
+        dto.Phone = dto.Phone?.Trim();
+
         if (await _accounts.GetByEmailAsync(dto.Email) != null)
             throw new Exception("Email already exists");
 
-        if (dto.DateOfBirth > DateTime.UtcNow.AddYears(-6))
+        if (dto.DateOfBirth.Date > DateTime.UtcNow.Date)
+            throw new Exception("Ngày sinh không hợp lệ (lớn hơn ngày hiện tại).");
+
+        if (dto.DateOfBirth.Date > DateTime.UtcNow.Date.AddYears(-6))
             throw new Exception("Người dùng phải từ 6 tuổi trở lên.");
 
         if (string.IsNullOrEmpty(dto.Phone) || dto.Phone.Length != 10 || !dto.Phone.All(char.IsDigit))
@@ -50,7 +57,7 @@ public class AuthService : IAuthService
         await _readers.AddAsync(new Reader
         {
             AccountId = account.Id,
-            CardNumber = $"LIB{DateTime.Now:yyyyMMdd}{account.Id:D4}",
+            CardNumber = $"LIB{DateTime.UtcNow:yyyyMMdd}{account.Id:D4}",
             FullName = dto.FullName,
             DateOfBirth = dto.DateOfBirth,
             Gender = dto.Gender,

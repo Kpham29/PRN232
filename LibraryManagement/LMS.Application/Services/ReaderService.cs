@@ -80,6 +80,9 @@ public class ReaderService : IReaderService
 
     public async Task RenewCardAsync(int id, int months)
     {
+        if (months <= 0)
+            throw new Exception("Số tháng gia hạn phải lớn hơn 0.");
+
         var reader = await _ctx.Readers.FirstOrDefaultAsync(r => r.Id == id)
             ?? throw new Exception("Reader not found");
         var baseDate = reader.CardExpiredDate > DateTime.UtcNow ? reader.CardExpiredDate : DateTime.UtcNow;
