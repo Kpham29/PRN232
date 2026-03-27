@@ -12,5 +12,6 @@ public class ReaderDto
     public string? Phone { get; set; }
     public DateTime CardIssuedDate { get; set; }
     public DateTime CardExpiredDate { get; set; }
+    public bool IsCardActive { get; set; }
     public bool IsActive { get; set; }
 }

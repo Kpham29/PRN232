@@ -16,28 +16,28 @@
                 <input type="hidden" asp-for="Id" />
                 
                 <div class="mb-3">
-                    <label asp-for="Title" class="form-label">Tên sách <span class="text-danger">*</span></label>
-                    <input asp-for="Title" class="form-control" />
+                    <label asp-for="Title" class="form-label text-dark fw-bold">Tên sách <span class="text-danger">*</span></label>
+                    <input asp-for="Title" class="form-control text-dark" style="color: black !important;" />
                     <span asp-validation-for="Title" class="text-danger small"></span>
                 </div>
                 
                 <div class="row mb-3 g-2">
                     <div class="col-md-6">
-                        <label asp-for="Author" class="form-label">Tác giả <span class="text-danger">*</span></label>
-                        <input asp-for="Author" class="form-control" />
+                        <label asp-for="Author" class="form-label text-dark fw-bold">Tác giả <span class="text-danger">*</span></label>
+                        <input asp-for="Author" class="form-control text-dark" style="color: black !important;" />
                         <span asp-validation-for="Author" class="text-danger small"></span>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="PublishedYear" class="form-label">Năm xuất bản <span class="text-danger">*</span></label>
-                        <input asp-for="PublishedYear" class="form-control" type="number" />
+                        <label asp-for="PublishedYear" class="form-label text-dark fw-bold">Năm xuất bản <span class="text-danger">*</span></label>
+                        <input asp-for="PublishedYear" class="form-control text-dark" type="number" style="color: black !important;" />
                         <span asp-validation-for="PublishedYear" class="text-danger small"></span>
                     </div>
                 </div>
 
                 <div class="row mb-3 g-2">
                     <div class="col-md-6">
-                        <label asp-for="CategoryId" class="form-label">Thể loại <span class="text-danger">*</span></label>
-                        <select asp-for="CategoryId" class="form-select">
+                        <label asp-for="CategoryId" class="form-label text-dark fw-bold">Thể loại <span class="text-danger">*</span></label>
+                        <select asp-for="CategoryId" class="form-select text-dark" style="color: black !important;">
                             <option value="">-- Chọn thể loại --</option>
                             @foreach (var cat in Model.Categories)
                             {
@@ -47,8 +47,8 @@
                         <span asp-validation-for="CategoryId" class="text-danger small"></span>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="PublisherId" class="form-label">Nhà xuất bản <span class="text-danger">*</span></label>
-                        <select asp-for="PublisherId" class="form-select">
+                        <label asp-for="PublisherId" class="form-label text-dark fw-bold">Nhà xuất bản <span class="text-danger">*</span></label>
+                        <select asp-for="PublisherId" class="form-select text-dark" style="color: black !important;">
                             <option value="">-- Chọn NXB --</option>
                             @foreach (var pub in Model.Publishers)
                             {
@@ -61,30 +61,30 @@
 
                 <div class="row mb-3 g-2">
                     <div class="col-md-6">
-                        <label asp-for="Price" class="form-label">Giá (VNĐ) <span class="text-danger">*</span></label>
-                        <input asp-for="Price" class="form-control" type="number" step="1000" />
+                        <label asp-for="Price" class="form-label text-dark fw-bold">Giá (VNĐ) <span class="text-danger">*</span></label>
+                        <input asp-for="Price" class="form-control text-dark" type="number" step="1000" style="color: black !important;" />
                         <span asp-validation-for="Price" class="text-danger small"></span>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="TotalQuantity" class="form-label">Tổng số lượng <span class="text-danger">*</span></label>
-                        <input asp-for="TotalQuantity" class="form-control" type="number" />
+                        <label asp-for="TotalQuantity" class="form-label text-dark fw-bold">Tổng số lượng <span class="text-danger">*</span></label>
+                        <input asp-for="TotalQuantity" class="form-control text-dark" type="number" style="color: black !important;" />
                         <span asp-validation-for="TotalQuantity" class="text-danger small"></span>
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="ISBN" class="form-label">Mã ISBN</label>
-                    <input asp-for="ISBN" class="form-control" />
+                    <label asp-for="ISBN" class="form-label text-dark fw-bold">Mã ISBN</label>
+                    <input asp-for="ISBN" class="form-control text-dark" style="color: black !important;" />
                 </div>
                 
                 <div class="mb-3">
-                    <label asp-for="CoverUrl" class="form-label">Đường dẫn ảnh bìa (URL)</label>
-                    <input asp-for="CoverUrl" class="form-control" placeholder="https://..." />
+                    <label asp-for="CoverUrl" class="form-label text-dark fw-bold">Đường dẫn ảnh bìa (URL)</label>
+                    <input asp-for="CoverUrl" class="form-control text-dark" placeholder="https://..." style="color: black !important;" />
                 </div>
 
                 <div class="mb-4">
-                    <label asp-for="Description" class="form-label">Mô tả</label>
-                    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                    <label asp-for="Description" class="form-label text-dark fw-bold">Mô tả</label>
+                    <textarea asp-for="Description" class="form-control text-dark" rows="3" style="color: black !important;"></textarea>
                 </div>
 
                 <div class="d-flex gap-2">

@@ -18,3 +18,11 @@ public class AdjustFineDto
     public decimal NewAmount { get; set; }
     public string? Note { get; set; }
 }
+
+public class CreateFineSlipDto
+{
+    public int BorrowSlipId { get; set; }
+    public decimal FineAmount { get; set; }
+    public string Reason { get; set; } = "";
+    public string? Note { get; set; }
+}

@@ -28,6 +28,9 @@ namespace LMS.Application.Services
 
         public async Task<CategoryDto> CreateAsync(string name)
         {
+            if (await _ctx.Categories.AnyAsync(c => c.Name == name))
+                throw new Exception("Tên thể loại này đã tồn tại.");
+
             var category = new Category { Name = name };
             await _categories.AddAsync(category);
             await _ctx.SaveChangesAsync();
@@ -38,6 +41,10 @@ namespace LMS.Application.Services
         {
             var category = await _categories.GetByIdAsync(id)
                 ?? throw new Exception("Category not found");
+
+            if (await _ctx.Categories.AnyAsync(c => c.Name == name && c.Id != id))
+                throw new Exception("Tên thể loại này đã tồn tại.");
+
             category.Name = name;
             await _ctx.SaveChangesAsync();
         }

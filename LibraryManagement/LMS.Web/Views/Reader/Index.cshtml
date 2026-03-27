@@ -1,52 +1,104 @@
 @model List<ReaderVm>
-@{ ViewData["Title"] = "Danh sách độc giả"; }
+@{ ViewData["Title"] = "Quản lý độc giả"; }
 
-<h4 class="mb-3"><i class="bi bi-people me-1"></i> Quản lý độc giả</h4>
-
-<form method="get" class="row g-2 mb-4">
+<div class="row mb-4 align-items-center">
     <div class="col-md-6">
-        <input name="search" value="@ViewBag.Search" class="form-control form-control-sm"
-               placeholder="Tìm theo tên đăng nhập hoặc số thẻ..."/>
+        <h2 class="display-6 fw-bold mb-0 text-gradient">
+            <i class="bi bi-people me-2"></i>Vì sự phát triển cộng đồng
+        </h2>
+        <p class="text-muted small mb-0">Quản lý tài khoản và trạng thái thẻ độc giả</p>
     </div>
-    <div class="col-md-2">
-        <button type="submit" class="btn btn-primary btn-sm w-100">Tìm kiếm</button>
+    <div class="col-md-6 mt-3 mt-md-0">
+        <div class="glass-panel p-2">
+            <form method="get" class="row g-2 align-items-center">
+                <div class="col-auto flex-fill">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-transparent border-0 text-muted"><i class="bi bi-search"></i></span>
+                        <input name="search" value="@ViewBag.Search" class="form-control border-0 bg-transparent" placeholder="Tên, số thẻ..."/>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary btn-sm px-3">Tìm</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-x-lg"></i></a>
+                </div>
+            </form>
+        </div>
     </div>
-    <div class="col-md-2">
-        <a asp-action="Index" class="btn btn-outline-secondary btn-sm w-100">Xóa lọc</a>
-    </div>
-</form>
+</div>
 
-<table class="table table-bordered table-hover table-sm">
-    <thead class="table-dark">
-        <tr>
-            <th>Mã thẻ</th>
-            <th>Họ và tên</th>
-            <th>Giới tính</th>
-            <th>SĐT</th>
-            <th>Trạng thái thẻ</th>
-            <th>Hạn thẻ</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach(var r in Model) {
-        <tr class="@(!r.IsCardValid ? "table-warning" : "")">
-            <td><code class="small">@r.CardNumber</code></td>
-            <td>@r.FullName</td>
-            <td>@(r.Gender == "Male" ? "Nam" : "Nữ")</td>
-            <td>@r.Phone</td>
-            <td>
-                @if(r.IsCardValid) {
-                    <span class="badge bg-success">Hợp lệ</span>
-                } else {
-                    <span class="badge bg-danger">Hết hạn</span>
-                }
-            </td>
-            <td>@r.CardExpiredDate.ToString("dd/MM/yyyy")</td>
-            <td class="text-center">
-                <a asp-action="Detail" asp-route-id="@r.Id" class="btn btn-sm btn-outline-primary">Chi tiết</a>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+<div class="card overflow-hidden border-0 shadow-lg animate-fade-in">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th class="ps-4">Thẻ</th>
+                    <th>Độc giả</th>
+                    <th>Thông tin chính</th>
+                    <th>Trạng thái thẻ</th>
+                    <th>Hạn dùng</th>
+                    <th class="text-end pe-4">Thao tác quản lý</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach(var r in Model) {
+                <tr class="align-middle @(!r.IsCardValid ? "bg-danger bg-opacity-5" : "")">
+                    <td class="ps-4">
+                        <span class="badge bg-dark bg-opacity-50 text-white font-monospace border border-secondary border-opacity-25">@r.CardNumber</span>
+                    </td>
+                    <td>
+                        <div class="fw-bold">@r.FullName</div>
+                        <div class="text-muted x-small">@r.Phone</div>
+                    </td>
+                    <td>
+                        <div class="small">
+                            <i class="bi bi-gender-ambiguous me-1"></i>@(r.Gender == "Male" ? "Nam" : "Nữ")
+                        </div>
+                    </td>
+                    <td>
+                        @if(r.IsCardValid) {
+                            <span class="badge rounded-pill bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3">Hợp lệ</span>
+                        } else if (!r.IsCardActive) {
+                            <span class="badge rounded-pill bg-secondary bg-opacity-10 text-muted border border-secondary border-opacity-25 px-3">Bị khóa</span>
+                        } else {
+                            <span class="badge rounded-pill bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-3">Hết hạn</span>
+                        }
+                    </td>
+                    <td class="small">@r.CardExpiredDate.ToString("dd/MM/yyyy")</td>
+                    <td class="text-end pe-4">
+                        <div class="d-flex gap-2 justify-content-end align-items-center">
+                            <form asp-action="ToggleCardStatus" asp-route-id="@r.Id" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-icon border-0 @(r.IsCardActive ? "text-secondary" : "text-success")" 
+                                        title="@(r.IsCardActive ? "Khóa thẻ" : "Mở khóa thẻ")">
+                                    <i class="bi bi-shield-@(r.IsCardActive ? "slash" : "check")"></i>
+                                </button>
+                            </form>
+
+                            <form asp-action="RenewCard" asp-route-id="@r.Id" method="post" class="d-flex gap-1 align-items-center bg-dark bg-opacity-25 p-1 rounded-3">
+                                <select name="months" class="form-select form-select-sm border-0 bg-transparent text-white x-small" style="width: 70px;">
+                                    <option value="1">1T</option>
+                                    <option value="3">3T</option>
+                                    <option value="6">6T</option>
+                                    <option value="12">12T</option>
+                                </select>
+                                <button type="submit" class="btn btn-sm btn-primary border-0 p-1" title="Gia hạn">
+                                    <i class="bi bi-lightning-fill small"></i>
+                                </button>
+                            </form>
+
+                            <a asp-action="Detail" asp-route-id="@r.Id" class="btn btn-sm btn-icon border-0 text-primary" title="Chi tiết">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .x-small { font-size: 0.7rem; }
+    .btn-icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .btn-icon:hover { background: rgba(255, 255, 255, 0.05); transform: translateY(-2px); }
+</style>

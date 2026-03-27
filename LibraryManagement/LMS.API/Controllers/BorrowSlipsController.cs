@@ -10,13 +10,17 @@ namespace LMS.API.Controllers;
 
 [ApiController]
 [Route("api/BorrowSlips")]
-public class BorrowSlipsController : ODataController
+public class BorrowSlipsController : ControllerBase
 {
     private readonly IBorrowSlipService _service;
     public BorrowSlipsController(IBorrowSlipService service) => _service = service;
 
     [HttpGet, EnableQuery, Authorize(Roles = "Admin,Librarian")]
-    public IQueryable<BorrowSlipDto> Get() => _service.GetAll();
+    public async Task<IQueryable<BorrowSlipDto>> Get()
+    {
+        await _service.SynchronizeStatusesAsync();
+        return _service.GetAll();
+    }
 
     [HttpGet("{id}"), Authorize(Roles = "Admin,Librarian")]
     public async Task<IActionResult> GetById(int id)
@@ -28,6 +32,7 @@ public class BorrowSlipsController : ODataController
     [HttpGet("mine"), Authorize(Roles = "Reader")]
     public async Task<IActionResult> GetMine()
     {
+        await _service.SynchronizeStatusesAsync();
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         return Ok(await _service.GetByReaderAsync(userId));
     }
@@ -44,6 +49,13 @@ public class BorrowSlipsController : ODataController
     public async Task<IActionResult> Return(int id)
     {
         await _service.ReturnAsync(id);
+        return NoContent();
+    }
+
+    [HttpPut("{id}/renew"), Authorize(Roles = "Admin,Librarian,Reader")]
+    public async Task<IActionResult> Renew(int id)
+    {
+        await _service.RenewAsync(id);
         return NoContent();
     }
 }

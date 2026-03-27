@@ -16,11 +16,14 @@ public class AppDbContext : DbContext
     public DbSet<BorrowSlipDetail> BorrowSlipDetails { get; set; }
     public DbSet<FineSlip> FineSlips { get; set; }
     public DbSet<BorrowRequest> BorrowRequests { get; set; }
+    public DbSet<CardRenewalRequest> CardRenewalRequests { get; set; }
 
     protected override void OnModelCreating(ModelBuilder mb)
     {
         mb.Entity<Account>().HasIndex(a => a.Email).IsUnique();
         mb.Entity<Reader>().HasIndex(r => r.CardNumber).IsUnique();
+        mb.Entity<Category>().HasIndex(c => c.Name).IsUnique();
+        mb.Entity<Publisher>().HasIndex(p => p.Name).IsUnique();
         mb.Entity<FineSlip>().HasIndex(f => f.BorrowSlipId).IsUnique();
         mb.Entity<BorrowRequest>().HasIndex(r => new { r.ReaderId, r.BookId, r.Status }).HasFilter("[Status] = 'Pending'");
 

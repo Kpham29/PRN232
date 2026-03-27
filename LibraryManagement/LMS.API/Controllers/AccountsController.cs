@@ -9,7 +9,7 @@ namespace LMS.API.Controllers;
 
 [ApiController]
 [Route("api/Accounts")]
-public class AccountsController : ODataController
+public class AccountsController : ControllerBase
 {
     private readonly IAccountService _accounts;
     public AccountsController(IAccountService accounts) => _accounts = accounts;

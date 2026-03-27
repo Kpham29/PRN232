@@ -6,7 +6,7 @@
         <tr>
             <th>Mã phiếu</th><th>Lý do</th>
             <th>Tiền phạt</th><th>Điều chỉnh</th><th>Thực phải nộp</th>
-            <th>Trạng thái</th><th>Ngày nộp</th>
+            <th>Trạng thái</th><th>Ngày nộp</th><th>Thao tác</th>
         </tr>
     </thead>
     <tbody>
@@ -26,6 +26,16 @@
                 </span>
             </td>
             <td>@(f.PaidAt?.ToString("dd/MM/yyyy") ?? "—")</td>
+            <td>
+                @if(f.Status != "Paid") {
+                    <form asp-action="PayOnline" method="post" style="display:inline">
+                        <input type="hidden" name="id" value="@f.Id" />
+                        <button type="submit" class="btn btn-sm btn-primary py-0 px-2">
+                            <i class="bi bi-qr-code me-1"></i>Thanh toán QR
+                        </button>
+                    </form>
+                }
+            </td>
         </tr>
     }
     </tbody>

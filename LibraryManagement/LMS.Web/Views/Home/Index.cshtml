@@ -2,23 +2,77 @@
     ViewData["Title"] = "Trang chủ";
 }
 
-<div class="text-center mt-5">
-    <i class="bi bi-book text-primary" style="font-size: 4rem;"></i>
-    <h1 class="display-4 fw-bold mt-3">Chào mừng đến với LMS</h1>
-    <p class="lead text-muted">Hệ thống quản lý mượn trả sách thư viện hiện đại.</p>
+<div class="row min-vh-75 align-items-center justify-content-center py-5">
+    <div class="col-lg-8 text-center animate-fade-in">
+        <div class="mb-4">
+            <div class="d-inline-block p-4 rounded-circle bg-primary bg-opacity-10 mb-4" style="backdrop-filter: blur(10px); border: 1px solid rgba(99, 102, 241, 0.2);">
+                <i class="bi bi-journal-bookmark-fill text-gradient" style="font-size: 5rem;"></i>
+            </div>
+            <h1 class="display-3 fw-bold mb-3">
+                Khai phá tri thức với <span class="text-gradient">LMS</span>
+            </h1>
+            <p class="lead text-muted fs-4 mb-5 mx-auto" style="max-width: 700px;">
+                Trải nghiệm hệ thống quản lý thư viện thế hệ mới. Hiện đại, nhanh chóng và tinh tế trên từng đường nét.
+            </p>
+        </div>
 
-    @if (Context.Session.GetString("jwt") == null)
-    {
-        <div class="mt-4">
-            <a asp-controller="Auth" asp-action="Login" class="btn btn-primary btn-lg me-2">Đăng nhập</a>
-            <a asp-controller="Auth" asp-action="Register" class="btn btn-outline-primary btn-lg">Đăng ký độc giả</a>
+        @if (Context.Session.GetString("jwt") == null)
+        {
+            <div class="d-flex gap-3 justify-content-center">
+                <a asp-controller="Auth" asp-action="Login" class="btn btn-primary btn-lg px-5 shadow-lg">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Bắt đầu ngay
+                </a>
+                <a asp-controller="Auth" asp-action="Register" class="btn btn-outline-primary btn-lg px-5">
+                    <i class="bi bi-person-plus me-2"></i>Đăng ký độc giả
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="glass-panel d-inline-block animate-fade-in shadow-lg">
+                <h4 class="mb-3">Chào mừng trở lại, <span class="text-gradient">@Context.Session.GetString("fullName")</span></h4>
+                <p class="text-muted mb-4">Hôm nay bạn muốn tìm cuốn sách nào?</p>
+                <div class="d-flex gap-3 justify-content-center">
+                    <a asp-controller="Book" asp-action="Index" class="btn btn-primary px-4">
+                        <i class="bi bi-search me-2"></i>Tìm kiếm sách
+                    </a>
+                    @if (Context.Session.GetString("role") == "Reader")
+                    {
+                        <a asp-controller="BorrowSlip" asp-action="Mine" class="btn btn-outline-primary px-4">
+                            <i class="bi bi-clock-history me-2"></i>Lịch sử mượn
+                        </a>
+                    }
+                </div>
+            </div>
+        }
+
+        <div class="row mt-5 pt-5 g-4 text-start">
+            <div class="col-md-4">
+                <div class="card h-100 p-4">
+                    <i class="bi bi-lightning-charge fs-1 text-accent mb-3"></i>
+                    <h5>Tốc độ vượt trội</h5>
+                    <p class="small text-muted mb-0">Xử lý mượn trả sách chỉ trong vài cú nhấp chuột.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 p-4">
+                    <i class="bi bi-shield-check fs-1 text-accent mb-3"></i>
+                    <h5>An toàn & Bảo mật</h5>
+                    <p class="small text-muted mb-0">Dữ liệu cá nhân và lịch sử của bạn luôn được bảo vệ nghiêm ngặt.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 p-4">
+                    <i class="bi bi-qr-code fs-1 text-accent mb-3"></i>
+                    <h5>Thanh toán hiện đại</h5>
+                    <p class="small text-muted mb-0">Hỗ trợ thanh toán phí phạt và gia hạn thẻ qua mã QR PayOS.</p>
+                </div>
+            </div>
         </div>
-    }
-    else
-    {
-        <div class="mt-4">
-            <p>Bạn đã đăng nhập với vai trò <strong>@Context.Session.GetString("role")</strong>.</p>
-            <a asp-controller="Book" asp-action="Index" class="btn btn-primary btn-lg">Đi tới Danh mục sách</a>
-        </div>
-    }
+    </div>
 </div>
+
+<style>
+    .min-vh-75 { min-height: 75vh; }
+    .text-accent { color: var(--accent); }
+</style>

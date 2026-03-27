@@ -66,8 +66,8 @@
                     </div>
                     
                     <div class="mb-3">
-                        <label class="form-label small fw-bold">Ngày mượn</label>
-                        <input type="date" name="borrowedAt" class="form-control" id="borrowedAtInput" required />
+                        <label class="form-label small fw-bold text-muted">Ngày mượn</label>
+                        <div class="form-control bg-light">Hôm nay (@DateTime.UtcNow.ToString("dd/MM/yyyy"))</div>
                     </div>
                     
                     <div class="mb-0">
@@ -108,12 +108,10 @@
                 } catch (e) { console.error(e); }
             }
             
-            // Set default dates (today and 14 days later)
             const today = new Date();
             const due = new Date();
             due.setDate(today.getDate() + 14);
             
-            document.getElementById('borrowedAtInput').value = today.toISOString().split('T')[0];
             document.getElementById('dueDateInput').value = due.toISOString().split('T')[0];
             
             new bootstrap.Modal(document.getElementById('approveModal')).show();

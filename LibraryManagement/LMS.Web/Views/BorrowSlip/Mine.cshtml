@@ -1,43 +1,88 @@
 @model List<BorrowSlipVm>
 @{ ViewData["Title"] = "Phiếu mượn của tôi"; }
-<h4 class="mb-3"><i class="bi bi-clipboard-check me-1"></i> Phiếu mượn của tôi</h4>
 
-<table class="table table-bordered table-hover table-sm">
-    <thead class="table-dark">
-        <tr>
-            <th>Mã phiếu</th>
-            <th>Ngày mượn</th><th>Hạn trả</th><th>Ngày trả</th>
-            <th>Trạng thái</th><th>Sách mượn</th>
-        </tr>
-    </thead>
-    <tbody>
-    @if(!Model.Any()) {
-        <tr><td colspan="6" class="text-center">Chưa mượn cuốn sách nào.</td></tr>
-    }
-    @foreach (var s in Model) {
-        <tr class="@(s.IsOverdue ? "table-danger" : s.Status=="Returned" ? "table-success" : "")">
-            <td><code class="small">@s.SlipCode</code><br/><small class="text-muted">@s.LibrarianName ghi nhận</small></td>
-            <td>@s.BorrowedAt.ToString("dd/MM/yyyy")</td>
-            <td class="@(s.IsOverdue ? "fw-bold" : "")">@s.DueDate.ToString("dd/MM/yyyy")</td>
-            <td>@(s.ReturnedAt?.ToString("dd/MM/yyyy") ?? "—")</td>
-            <td>
-                <span class="badge bg-@(s.Status=="Borrowing"?"primary":s.Status=="Returned"?"success":"danger")">
-                    @s.Status
-                </span>
-                @if (s.HasFine) {
-                    <span class="badge bg-warning text-dark">
-                        Phạt @s.FineAmount?.ToString("N0")đ
-                    </span>
-                }
-            </td>
-            <td class="small text-muted">
-                <ul class="mb-0 ps-3">
-                    @foreach(var d in s.Details) {
-                        <li>@d.BookTitle (x@d.Quantity)</li>
-                    }
-                </ul>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="h3 fw-bold mb-0 text-dark">
+        <i class="bi bi-journal-text text-primary me-2"></i>Phiếu mượn của tôi
+    </h2>
+</div>
+
+<div class="card border-0 shadow-sm overflow-hidden">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th class="ps-4">Mã phiếu</th>
+                    <th>Ngày mượn</th>
+                    <th>Hạn trả</th>
+                    <th>Ngày trả</th>
+                    <th>Trạng thái</th>
+                    <th>Sách mượn</th>
+                    <th class="text-end pe-4">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+            @if(!Model.Any()) {
+                <tr><td colspan="7" class="text-center py-5 text-muted fw-medium border-0">Chưa mượn cuốn sách nào.</td></tr>
+            }
+            @foreach (var s in Model) {
+                <tr>
+                    <td class="ps-4">
+                        <div class="fw-bold text-primary">@s.SlipCode</div>
+                        <div class="text-muted small fw-medium">By @s.LibrarianName</div>
+                    </td>
+                    <td class="small fw-semibold">@s.BorrowedAt.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        <div class="small fw-bold @(s.IsOverdue ? "text-danger" : "text-dark")">
+                            @s.DueDate.ToString("dd/MM/yyyy")
+                            @if(s.IsOverdue){ <span class="ms-1 small text-danger">(Quá hạn)</span> }
+                        </div>
+                    </td>
+                    <td class="small text-muted">@(s.ReturnedAt?.ToString("dd/MM/yyyy") ?? "—")</td>
+                    <td>
+                        @{
+                            var badgeClass = s.Status switch {
+                                "Borrowing" => "bg-primary text-white",
+                                "Returned" => "bg-success text-white",
+                                "Overdue" => "bg-danger text-white",
+                                _ => "bg-secondary text-white"
+                            };
+                        }
+                        <span class="badge rounded-pill @badgeClass px-3">
+                            @s.Status
+                        </span>
+                        @if (s.HasFine) {
+                            <div class="mt-1 small text-warning fw-bold d-flex align-items-center">
+                                <i class="bi bi-cash-stack me-1"></i>@s.FineAmount?.ToString("N0")đ
+                            </div>
+                        }
+                    </td>
+                    <td>
+                        <ul class="list-unstyled mb-0 small">
+                            @foreach(var d in s.Details) {
+                                <li class="text-truncate fw-medium" style="max-width: 180px;" title="@d.BookTitle">
+                                    <i class="bi bi-book-fill text-muted me-1 tiny-icon"></i>@d.BookTitle
+                                </li>
+                            }
+                        </ul>
+                    </td>
+                    <td class="text-end pe-4">
+                        @if (s.Status == "Borrowing") {
+                            <form asp-action="Renew" asp-route-id="@s.Id" method="post">
+                                <button type="submit" class="btn btn-primary shadow-sm btn-sm px-3"
+                                        onclick="return confirm('Bạn muốn gia hạn thêm 7 ngày cho các cuốn sách trong phiếu này?')">
+                                    <i class="bi bi-calendar-plus me-1"></i> Gia hạn
+                                </button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .tiny-icon { font-size: 0.75rem; vertical-align: middle; opacity: 0.6; }
+</style>

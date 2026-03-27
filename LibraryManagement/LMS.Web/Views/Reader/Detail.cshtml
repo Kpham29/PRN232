@@ -26,16 +26,33 @@
                 <p><strong>Trình trạng:</strong> 
                     @if(Model.IsCardValid) {
                         <span class="badge bg-success">Đang hoạt động</span>
+                    } else if (!Model.IsCardActive) {
+                        <span class="badge bg-secondary">Bị khóa</span>
                     } else {
                         <span class="badge bg-danger">Hết hạn</span>
                     }
                 </p>
 
-                <form asp-action="RenewCard" asp-route-id="@Model.Id" method="post" class="mt-3">
-                    <button type="submit" class="btn btn-warning" onclick="return confirm('Xác nhận gia hạn thẻ này thêm 1 năm?');">
-                        <i class="bi bi-arrow-clockwise me-1"></i>Gia hạn thẻ
-                    </button>
-                </form>
+                <div class="d-flex gap-2 justify-content-end mt-3">
+                    <form asp-action="ToggleCardStatus" asp-route-id="@Model.Id" method="post">
+                        <button type="submit" class="btn btn-@(Model.IsCardActive ? "secondary" : "success")">
+                            <i class="bi bi-card-@(Model.IsCardActive ? "x" : "checklist") me-1"></i>
+                            @(Model.IsCardActive ? "Khóa thẻ" : "Mở khóa thẻ")
+                        </button>
+                    </form>
+
+                    <form asp-action="RenewCard" asp-route-id="@Model.Id" method="post" class="d-flex gap-2">
+                        <select name="months" class="form-select" style="width: 120px;">
+                            <option value="1">1 tháng</option>
+                            <option value="3">3 tháng</option>
+                            <option value="6">6 tháng</option>
+                            <option value="12">12 tháng</option>
+                        </select>
+                        <button type="submit" class="btn btn-info">
+                            <i class="bi bi-clock-history me-1"></i>Gia hạn
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

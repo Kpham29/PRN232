@@ -9,7 +9,7 @@ namespace LMS.API.Controllers;
 
 [ApiController]
 [Route("api/BorrowRequests")]
-public class BorrowRequestsController : ODataController
+public class BorrowRequestsController : ControllerBase
 {
     private readonly IBorrowRequestService _service;
     public BorrowRequestsController(IBorrowRequestService service) => _service = service;

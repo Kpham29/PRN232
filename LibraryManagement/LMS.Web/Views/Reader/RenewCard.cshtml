@@ -1,0 +1,99 @@
+@model ReaderVm
+@{ ViewData["Title"] = "Gia hạn thẻ thư viện"; }
+
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white py-3 border-0">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-calendar-check me-2 text-primary"></i> Gia hạn thẻ thư viện</h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="alert alert-info border-0 shadow-none d-flex align-items-center mb-4">
+                    <i class="bi bi-info-circle-fill fs-4 me-3"></i>
+                    <div>
+                        <div class="small fw-bold">Thông tin thẻ hiện tại</div>
+                        <div class="small text-muted">Hết hạn vào: <strong>@Model.CardExpiredDate.ToString("dd/MM/yyyy")</strong></div>
+                    </div>
+                </div>
+
+                <h6 class="text-uppercase small fw-bold text-muted mb-3">Chọn gói gia hạn</h6>
+                
+                <form asp-action="RenewCard" method="post">
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="card-option">
+                                <input type="radio" name="months" value="1" checked />
+                                <div class="option-content">
+                                    <div class="months">1 Tháng</div>
+                                    <div class="price">50.000đ</div>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="card-option">
+                                <input type="radio" name="months" value="3" />
+                                <div class="option-content">
+                                    <div class="months">3 Tháng</div>
+                                    <div class="price">120.000đ</div>
+                                    <div class="badge bg-success-subtle text-success mt-1">Tiết kiệm 30k</div>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="card-option">
+                                <input type="radio" name="months" value="6" />
+                                <div class="option-content">
+                                    <div class="months">6 Tháng</div>
+                                    <div class="price">200.000đ</div>
+                                    <div class="badge bg-success-subtle text-success mt-1">Tiết kiệm 100k</div>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="card-option">
+                                <input type="radio" name="months" value="12" />
+                                <div class="option-content">
+                                    <div class="months">12 Tháng</div>
+                                    <div class="price">350.000đ</div>
+                                    <div class="badge bg-primary-subtle text-primary mt-1">Siêu rẻ - Best</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="card bg-light border-0 mb-4">
+                        <div class="card-body py-2 px-3 small d-flex align-items-center">
+                            <i class="bi bi-qr-code-scan me-2"></i>
+                            Thanh toán an toàn qua <strong>PayOS</strong> (Quét mã QR Ngân hàng)
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">
+                        Tiếp tục thanh toán <i class="bi bi-arrow-right ms-2"></i>
+                    </button>
+                    <a asp-action="MyProfile" class="btn btn-link w-100 text-muted text-decoration-none mt-2 small">Quay lại hồ sơ</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card-option { width: 100%; cursor: pointer; }
+    .card-option input { display: none; }
+    .option-content {
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        transition: all 0.2s;
+        background: #fff;
+    }
+    .card-option input:checked + .option-content {
+        border-color: #0d6efd;
+        background-color: #f8fbff;
+        box-shadow: 0 4px 12px rgba(13, 110, 253, 0.1);
+    }
+    .option-content .months { font-weight: bold; font-size: 1.1rem; color: #343a40; }
+    .option-content .price { font-weight: 800; font-size: 1.25rem; color: #0d6efd; margin-top: 5px; }
+</style>

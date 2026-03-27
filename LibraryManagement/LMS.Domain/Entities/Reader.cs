@@ -2,7 +2,8 @@ namespace LMS.Domain.Entities;
 
 public class Reader
 {
-    public bool IsCardValid => CardExpiredDate > DateTime.UtcNow;
+    public bool IsCardActive { get; set; } = true;
+    public bool IsCardValid => IsCardActive && CardExpiredDate > DateTime.UtcNow;
 
 
     public int Id { get; set; }

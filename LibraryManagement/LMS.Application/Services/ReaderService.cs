@@ -32,6 +32,7 @@ public class ReaderService : IReaderService
                 Phone           = r.Phone,
                 CardIssuedDate  = r.CardIssuedDate,
                 CardExpiredDate = r.CardExpiredDate,
+                IsCardActive    = r.IsCardActive,
                 IsActive        = r.Account.IsActive
             });
 
@@ -51,6 +52,7 @@ public class ReaderService : IReaderService
             Phone           = r.Phone,
             CardIssuedDate  = r.CardIssuedDate,
             CardExpiredDate = r.CardExpiredDate,
+            IsCardActive    = r.IsCardActive,
             IsActive        = r.Account.IsActive
         };
     }
@@ -71,17 +73,25 @@ public class ReaderService : IReaderService
             Phone           = r.Phone,
             CardIssuedDate  = r.CardIssuedDate,
             CardExpiredDate = r.CardExpiredDate,
+            IsCardActive    = r.IsCardActive,
             IsActive        = r.Account.IsActive
         };
     }
 
-    public async Task RenewCardAsync(int id)
+    public async Task RenewCardAsync(int id, int months)
     {
         var reader = await _ctx.Readers.FirstOrDefaultAsync(r => r.Id == id)
             ?? throw new Exception("Reader not found");
-        // Gia han them 1 nam tinh tu ngay het han
-        reader.CardExpiredDate = reader.CardExpiredDate.AddYears(1);
-        _ctx.Readers.Update(reader);
+        var baseDate = reader.CardExpiredDate > DateTime.UtcNow ? reader.CardExpiredDate : DateTime.UtcNow;
+        reader.CardExpiredDate = baseDate.AddMonths(months);
+        await _ctx.SaveChangesAsync();
+    }
+
+    public async Task ToggleCardStatusAsync(int id)
+    {
+        var reader = await _ctx.Readers.FirstOrDefaultAsync(r => r.Id == id)
+            ?? throw new Exception("Reader not found");
+        reader.IsCardActive = !reader.IsCardActive;
         await _ctx.SaveChangesAsync();
     }
 }

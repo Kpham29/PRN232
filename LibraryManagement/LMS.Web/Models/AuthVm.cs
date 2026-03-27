@@ -15,6 +15,7 @@ public class RegisterVm {
     [Compare("Password")]    public string   ConfirmPassword { get; set; } = "";
     [Required]               public DateTime DateOfBirth     { get; set; }
     [Required]               public string   Gender          { get; set; } = "Male";
+    [Required][Phone][StringLength(10, MinimumLength = 10)] 
     public string? Phone { get; set; }
     public string? Address { get; set; }
     public string? ErrorMessage { get; set; }

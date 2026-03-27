@@ -1,4 +1,4 @@
-﻿using LMS.Application.DTOs;
+using LMS.Application.DTOs;
 using LMS.Application.Interfaces;
 using LMS.Domain.Entities;
 using LMS.Domain.Interfaces;
@@ -41,6 +41,9 @@ public class PublisherService : IPublisherService
 
     public async Task<PublisherDto> CreateAsync(PublisherDto dto)
     {
+        if (await _ctx.Publishers.AnyAsync(p => p.Name == dto.Name))
+            throw new Exception("Tên nhà xuất bản này đã tồn tại.");
+
         var publisher = new Publisher
         {
             Name    = dto.Name,
@@ -62,6 +65,10 @@ public class PublisherService : IPublisherService
     {
         var publisher = await _publishers.GetByIdAsync(id)
             ?? throw new Exception("Publisher not found");
+
+        if (await _ctx.Publishers.AnyAsync(p => p.Name == dto.Name && p.Id != id))
+            throw new Exception("Tên nhà xuất bản này đã tồn tại.");
+
         publisher.Name    = dto.Name;
         publisher.Address = dto.Address;
         publisher.Phone   = dto.Phone;

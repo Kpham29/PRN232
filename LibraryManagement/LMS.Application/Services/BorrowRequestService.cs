@@ -61,7 +61,23 @@ public class BorrowRequestService : IBorrowRequestService
             ?? throw new Exception("Reader profile required to borrow books");
         
         if (!reader.IsCardValid)
-            throw new Exception("Your library card is expired");
+            throw new Exception("Thẻ thư viện của bạn đã hết hạn hoặc bị khóa.");
+
+        // Check if book is already being borrowed by this reader
+        var isBorrowing = await _ctx.BorrowSlips
+            .AnyAsync(b => b.ReaderId == reader.Id && b.Status == "Borrowing" && b.Details.Any(d => d.BookId == dto.BookId));
+        if (isBorrowing)
+            throw new Exception("Bạn đang mượn cuốn sách này rồi. Vui lòng gia hạn nếu muốn đọc thêm.");
+
+        // Check for overdue books
+        var hasOverdue = await _ctx.BorrowSlips.AnyAsync(b => b.ReaderId == reader.Id && b.Status == "Borrowing" && b.DueDate < DateTime.UtcNow);
+        if (hasOverdue)
+            throw new Exception("Bạn đang có sách quá hạn chưa trả. Vui lòng trả sách trước khi yêu cầu mượn mới.");
+
+        // Check for unpaid fines
+        var hasUnpaidFines = await _ctx.FineSlips.AnyAsync(f => f.BorrowSlip.ReaderId == reader.Id && f.Status == "Unpaid");
+        if (hasUnpaidFines)
+            throw new Exception("Bạn đang có phí phạt chưa thanh toán. Vui lòng thanh toán trước khi yêu cầu mượn mới.");
 
         // Use the new repository method for efficiency
         if (await _requests.AnyPendingAsync(reader.Id, dto.BookId))
@@ -111,13 +127,22 @@ public class BorrowRequestService : IBorrowRequestService
         if (req.Status != "Pending")
             throw new Exception("Request is already processed");
 
+        if (!dto.DueDate.HasValue)
+            throw new Exception("Vui lòng chọn ngày trả sách.");
+
+        if (dto.DueDate.Value.Date < DateTime.UtcNow.Date)
+            throw new Exception("Ngày trả không được nhỏ hơn ngày hiện tại");
+
+        // Fixed BorrowedAt to current date
+        var borrowedDate = DateTime.UtcNow;
+
         // Convert to BorrowSlip
         var slipDto = new CreateBorrowSlipDto
         {
             ReaderId   = req.ReaderId,
             Books      = new List<CreateDetailDto> { new() { BookId = req.BookId, Quantity = 1 } },
-            BorrowedAt = dto.BorrowedAt,
-            DueDate    = dto.DueDate
+            BorrowedAt = borrowedDate,
+            DueDate    = dto.DueDate.Value
         };
 
         await _borrowSlips.CreateAsync(slipDto, librarianId);

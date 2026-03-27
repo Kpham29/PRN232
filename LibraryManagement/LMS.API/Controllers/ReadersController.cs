@@ -10,10 +10,15 @@ namespace LMS.API.Controllers;
 
 [ApiController]
 [Route("api/Readers")]
-public class ReadersController : ODataController
+public class ReadersController : ControllerBase
 {
     private readonly IReaderService _readers;
-    public ReadersController(IReaderService readers) => _readers = readers;
+    private readonly IBorrowSlipService _borrows;
+    public ReadersController(IReaderService readers, IBorrowSlipService borrows)
+    {
+        _readers = readers;
+        _borrows = borrows;
+    }
 
     [HttpGet, EnableQuery, Authorize(Roles = "Admin,Librarian")]
     public IQueryable<ReaderDto> Get() => _readers.GetAll();
@@ -28,25 +33,23 @@ public class ReadersController : ODataController
     [HttpGet("Me"), Authorize(Roles = "Reader")]
     public async Task<IActionResult> GetMe()
     {
+        await _borrows.SynchronizeStatusesAsync();
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         var r = await _readers.GetByAccountIdAsync(userId);
         return r == null ? NotFound() : Ok(r);
     }
 
-    [HttpPost("Me/Renew"), Authorize(Roles = "Reader")]
-    public async Task<IActionResult> RenewMyCard()
+    [HttpPost("{id}/renew-card"), Authorize(Roles = "Admin,Librarian")]
+    public async Task<IActionResult> RenewCard(int id, [FromQuery] int months)
     {
-        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-        var r = await _readers.GetByAccountIdAsync(userId);
-        if (r == null) return NotFound();
-        await _readers.RenewCardAsync(r.Id);
+        await _readers.RenewCardAsync(id, months);
         return NoContent();
     }
 
-    [HttpPost("{id}/renew-card"), Authorize(Roles = "Admin,Librarian")]
-    public async Task<IActionResult> RenewCard(int id)
+    [HttpPost("{id}/toggle-card-status"), Authorize(Roles = "Admin,Librarian")]
+    public async Task<IActionResult> ToggleCardStatus(int id)
     {
-        await _readers.RenewCardAsync(id);
+        await _readers.ToggleCardStatusAsync(id);
         return NoContent();
     }
 

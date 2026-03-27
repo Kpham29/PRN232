@@ -9,7 +9,7 @@ namespace LMS.API.Controllers;
 
 [ApiController]
 [Route("api/Books")]
-public class BooksController : ODataController
+public class BooksController : ControllerBase
 {
     private readonly IBookService _books;
 

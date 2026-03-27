@@ -6,22 +6,68 @@
     <title>@ViewData["Title"] — LMS</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css"/>
+    <style>
+        :root {
+            --primary: #4338ca;
+            --primary-hover: #3730a3;
+            --bg-light: #f1f5f9;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-light); color: #1e293b; }
+        .navbar { box-shadow: 0 4px 12px rgba(67, 56, 202, 0.2); }
+        .navbar-brand { font-size: 1.5rem; letter-spacing: -0.025em; }
+        .nav-link { font-weight: 500; color: rgba(255,255,255,0.85) !important; padding: 0.5rem 1rem !important; }
+        .nav-link:hover { color: #fff !important; }
+        
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-radius: 0.75rem;
+            padding: 0.5rem;
+        }
+        .dropdown-item { 
+            color: #475569; 
+            border-radius: 0.5rem; 
+            padding: 0.75rem 1.25rem;
+            font-weight: 500;
+        }
+        .dropdown-item:hover { background: #f8fafc; color: var(--primary); }
+        
+        .card { border: none; border-radius: 1rem; box-shadow: var(--card-shadow); background: #fff; }
+        .btn { border-radius: 0.625rem; font-weight: 600; padding: 0.6rem 1.2rem; transition: all 0.2s; }
+        .btn-primary { background: var(--primary); border: none; color: #fff !important; }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(67, 56, 202, 0.3); }
+        .btn-outline-primary { color: var(--primary); border: 2px solid var(--primary); background: transparent; }
+        .btn-outline-primary:hover { background: var(--primary); color: #fff !important; }
+        
+        .alert { border: none; border-radius: 0.75rem; box-shadow: var(--card-shadow); border-left: 6px solid; }
+        .alert-success { background: #ecfdf5; color: #065f46; border-left-color: #10b981; }
+        .alert-danger { background: #fef2f2; color: #991b1b; border-left-color: #ef4444; }
+        
+        .table thead th { background: #f8fafc; font-weight: 700; color: #475569; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; border-bottom: 2px solid #e2e8f0; }
+        .badge { font-weight: 600; padding: 0.5em 1em; }
+    </style>
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">
-                <i class="bi bi-book-half me-1"></i> LMS
+<body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top py-3">
+        <div class="container px-4">
+            <a class="navbar-brand fw-bold d-flex align-items-center" asp-controller="Home" asp-action="Index">
+                <i class="bi bi-book-half me-2"></i> LMS
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarContent">
-                <ul class="navbar-nav me-auto">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                     @if (Context.Session.GetString("role") == "Admin") {
                         <li class="nav-item"><a class="nav-link" asp-controller="Home"        asp-action="Dashboard">Dashboard</a></li>
                         <li class="nav-item"><a class="nav-link" asp-controller="Book"        asp-action="Index">Sách</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Category"    asp-action="Index">Thể loại</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Publisher"   asp-action="Index">Nhà XB</a></li>
                         <li class="nav-item"><a class="nav-link" asp-controller="Account"     asp-action="Index">Tài khoản</a></li>
                         <li class="nav-item"><a class="nav-link" asp-controller="Reader"      asp-action="Index">Độc giả</a></li>
                     }
@@ -43,10 +89,13 @@
                 <ul class="navbar-nav">
                     @if (Context.Session.GetString("jwt") != null) {
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-white" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="bi bi-person-circle me-1"></i>@Context.Session.GetString("fullName")
+                            <a class="nav-link dropdown-toggle text-white d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                <div class="bg-white bg-opacity-20 rounded-circle p-1 me-2">
+                                    <i class="bi bi-person-fill fs-5"></i>
+                                </div>
+                                <span class="fw-bold">@Context.Session.GetString("fullName")</span>
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end shadow">
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0">
                                 @if (Context.Session.GetString("role") == "Reader") {
                                     <li><a class="dropdown-item" asp-controller="Reader" asp-action="MyProfile">
                                         <i class="bi bi-person me-2"></i>Hồ sơ cá nhân</a></li>
@@ -64,21 +113,38 @@
             </div>
         </div>
     </nav>
-    <main class="container-fluid py-4 px-4">
-        @if (TempData["Success"] != null) {
-            <div class="alert alert-success alert-dismissible fade show">
-                <i class="bi bi-check-circle me-1"></i>@TempData["Success"]
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <main class="container py-5 flex-grow-1">
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                @if (TempData["Success"] != null) {
+                    <div class="alert alert-success alert-dismissible fade show mb-4 py-3">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill me-3 fs-4"></i>
+                            <div class="fw-medium">@TempData["Success"]</div>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+                @if (TempData["Error"] != null) {
+                    <div class="alert alert-danger alert-dismissible fade show mb-4 py-3">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-exclamation-triangle-fill me-3 fs-4"></i>
+                            <div class="fw-medium">@TempData["Error"]</div>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+                @RenderBody()
             </div>
-        }
-        @if (TempData["Error"] != null) {
-            <div class="alert alert-danger alert-dismissible fade show">
-                <i class="bi bi-exclamation-circle me-1"></i>@TempData["Error"]
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        }
-        @RenderBody()
+        </div>
     </main>
+    <footer class="bg-white py-4 mt-auto border-top">
+        <div class="container text-center">
+            <p class="text-muted small mb-0 fw-medium">
+                &copy; @DateTime.Now.Year — <strong>Library Management System</strong>. Built with <i class="bi bi-heart-fill text-danger mx-1"></i>
+            </p>
+        </div>
+    </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

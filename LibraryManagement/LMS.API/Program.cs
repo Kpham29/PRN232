@@ -63,6 +63,8 @@ builder.Services.AddSwaggerGen(c =>
             new string[] {}
         }
     });
+    c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+    c.CustomSchemaIds(type => type.ToString());
 });
 
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
@@ -90,9 +92,12 @@ builder.Services.AddScoped<IBorrowRequestService, BorrowRequestService>();
 var app = builder.Build();
 app.UseExceptionHandler(err => err.Run(async ctx => {
     var ex = ctx.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>()?.Error;
-    ctx.Response.StatusCode = 400;
+    ctx.Response.StatusCode = (ex is ArgumentException || ex is InvalidOperationException) ? 400 : 500;
     ctx.Response.ContentType = "application/json";
-    await ctx.Response.WriteAsJsonAsync(new { error = ex?.Message });
+    await ctx.Response.WriteAsJsonAsync(new { 
+        error = ex?.Message,
+        detail = ex?.StackTrace
+    });
 }));
 
 // Configure the HTTP request pipeline.

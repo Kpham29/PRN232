@@ -9,5 +9,6 @@ public class ReaderVm {
     public string? Address { get; set; }
     public DateTime CardIssuedDate { get; set; }
     public DateTime CardExpiredDate { get; set; }
-    public bool IsCardValid => CardExpiredDate > DateTime.UtcNow;
+    public bool IsCardActive { get; set; }
+    public bool IsCardValid => IsCardActive && CardExpiredDate > DateTime.UtcNow;
 }

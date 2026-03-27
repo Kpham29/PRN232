@@ -1,8 +1,11 @@
 using LMS.Web.Models;
 using LMS.Web.Services;
 using Microsoft.AspNetCore.Mvc;
+using LMS.Web.Filters;
 
 namespace LMS.Web.Controllers;
+
+[SessionAuthorize(Roles = "Admin")]
 
 public class AccountController : Controller {
     private readonly ApiService _api;

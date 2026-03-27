@@ -19,6 +19,7 @@ public class BorrowSlipVm {
 }
 
 public class BorrowDetailVm {
+    public int BookId { get; set; }
     public string BookTitle { get; set; } = "";
     public int Quantity { get; set; }
 }
@@ -26,6 +27,10 @@ public class BorrowDetailVm {
 public class CreateBorrowSlipVm {
     [Required] public int ReaderId { get; set; }
     public List<BorrowItemVm> Items { get; set; } = new();
+    
+    public DateTime? BorrowedAt { get; set; } = DateTime.Now;
+    public DateTime? DueDate { get; set; } = DateTime.Now.AddDays(14);
+
     public List<ReaderVm> ReaderList { get; set; } = new();
     public List<BookVm> BookList { get; set; } = new();
 }

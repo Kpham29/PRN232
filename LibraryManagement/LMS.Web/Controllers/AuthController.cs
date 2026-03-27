@@ -40,6 +40,8 @@ public class AuthController : Controller {
 
     public IActionResult Logout() { HttpContext.Session.Clear(); return RedirectToAction("Login"); }
 
+    [HttpGet] public IActionResult AccessDenied() => View();
+
     [HttpGet] public IActionResult ChangePassword() {
         if (HttpContext.Session.GetString("jwt") == null) return RedirectToAction("Login");
         return View(new ChangePasswordVm());

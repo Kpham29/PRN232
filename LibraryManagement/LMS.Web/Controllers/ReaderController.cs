@@ -18,23 +18,58 @@ public class ReaderController : Controller {
     public async Task<IActionResult> Detail(int id) =>
         await _api.GetAsync<ReaderVm>($"Readers/{id}") is { } r ? View(r) : NotFound();
 
-    [HttpPost] public async Task<IActionResult> RenewCard(int id) {
-        await _api.PostAsync($"Readers/{id}/renew-card", new { });
-        TempData["Success"] = "Gia hạn thẻ thêm 1 năm thành công.";
-        return RedirectToAction("Detail", new { id });
-    }
-
-    public async Task<IActionResult> MyProfile() {
+    [HttpGet]
+    public async Task<IActionResult> RenewCard()
+    {
         var reader = await _api.GetAsync<ReaderVm>("Readers/Me");
         if (reader == null) return RedirectToAction("Login", "Auth");
         return View(reader);
     }
 
-    [HttpPost] public async Task<IActionResult> RenewMyCard() {
-        var (ok, body) = await _api.PostAsync("Readers/Me/Renew", new { });
-        if (!ok) TempData["Error"] = "Lỗi gia hạn: " + body;
-        else TempData["Success"] = "Bạn đã tự gia hạn thẻ thành công thêm 1 năm!";
-        return RedirectToAction("MyProfile");
+    [HttpPost]
+    public async Task<IActionResult> RenewCard(int? id, int months)
+    {
+        if (id.HasValue) // Manual renewal by Librarian/Admin
+        {
+            await _api.PostAsync($"Readers/{id}/renew-card?months={months}", new { });
+            TempData["Success"] = $"Gia hạn thẻ thêm {months} tháng thành công.";
+            return RedirectToAction("Index");
+        }
+        else // Payment-based renewal by Reader
+        {
+            var domain = $"{Request.Scheme}://{Request.Host}";
+            var res = await _api.PostAsync<object>($"Payments/create-renewal-link?months={months}&domain={domain}", new { });
+            if (res.Ok)
+            {
+                using var doc = System.Text.Json.JsonDocument.Parse(res.Body);
+                var url = doc.RootElement.GetProperty("checkoutUrl").GetString();
+                return Redirect(url!);
+            }
+            TempData["Error"] = "Không thể khởi tạo thanh toán. Vui lòng thử lại.";
+            return RedirectToAction("MyProfile");
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ToggleCardStatus(int id)
+    {
+        await _api.PostAsync($"Readers/{id}/toggle-card-status", new { });
+        TempData["Success"] = "Đã thay đổi trạng thái thẻ.";
+        return RedirectToAction("Index");
+    }
+
+    public async Task<IActionResult> MyProfile()
+    {
+        if (string.IsNullOrEmpty(HttpContext.Session.GetString("jwt")))
+            return RedirectToAction("Login", "Auth");
+
+        var reader = await _api.GetAsync<ReaderVm>("Readers/Me");
+        if (reader == null)
+        {
+            TempData["Error"] = "Không tìm thấy thông tin hồ sơ độc giả. Vui lòng thử đăng nhập lại.";
+            return RedirectToAction("Index", "Home");
+        }
+        return View(reader);
     }
 
     [HttpGet] public async Task<IActionResult> GetJson(int id) {

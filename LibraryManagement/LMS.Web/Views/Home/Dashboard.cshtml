@@ -49,11 +49,34 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h6 class="text-uppercase small fw-bold opacity-75">Tiền phạt chưa thu</h6>
+                        <h6 class="text-uppercase small fw-bold opacity-75">Tiền phạt</h6>
                         <h2 class="mb-0">@Model.Stats.TotalFineAmount.ToString("N0")đ</h2>
                     </div>
                     <i class="bi bi-currency-dollar fs-1 opacity-50"></i>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white py-3 border-0">
+                <h6 class="mb-0 text-dark fw-bold"><i class="bi bi-bar-chart-line me-2 text-primary"></i> Biểu đồ xu hướng mượn sách (Top 10)</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="topBooksChart" style="max-height: 300px;"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white py-3 border-0">
+                <h6 class="mb-0 text-dark fw-bold"><i class="bi bi-pie-chart me-2 text-info"></i> Thống kê tổng quan</h6>
+            </div>
+            <div class="card-body d-flex align-items-center justify-content-center">
+                <canvas id="statsChart" style="max-height: 250px;"></canvas>
             </div>
         </div>
     </div>
@@ -103,11 +126,11 @@
         </div>
     </div>
 
-    <!-- Top Books -->
+    <!-- Top Books List -->
     <div class="col-lg-4">
         <div class="card shadow-sm border-0 h-100">
             <div class="card-header bg-white py-3 border-0">
-                <h6 class="mb-0 text-dark fw-bold"><i class="bi bi-graph-up-arrow me-2 text-success"></i> Top sách mượn nhiều nhất</h6>
+                <h6 class="mb-0 text-dark fw-bold"><i class="bi bi-list-stars me-2 text-success"></i> Chi tiết Top sách</h6>
             </div>
             <div class="card-body p-0">
                 <div class="list-group list-group-flush small">
@@ -119,7 +142,7 @@
                             <div class="d-flex align-items-center me-2">
                                 <div class="badge bg-light text-muted me-3">#@(Model.TopBooks.IndexOf(b)+1)</div>
                                 <div>
-                                    <div class="fw-bold">@b.Title</div>
+                                    <div class="fw-bold text-truncate" style="max-width: 150px;">@b.Title</div>
                                     <div class="text-muted opacity-75 small">@b.Author</div>
                                 </div>
                             </div>
@@ -131,3 +154,63 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Top Books Chart
+        const topBooksCtx = document.getElementById('topBooksChart').getContext('2d');
+        new Chart(topBooksCtx, {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.TopBooks.Select(b => b.Title))),
+                datasets: [{
+                    label: 'Số lượt mượn',
+                    data: @Html.Raw(Json.Serialize(Model.TopBooks.Select(b => b.BorrowCount))),
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1,
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { display: false } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // Stats Chart
+        const statsCtx = document.getElementById('statsChart').getContext('2d');
+        new Chart(statsCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Sách', 'Độc giả', 'Đang mượn', 'Quá hạn'],
+                datasets: [{
+                    data: [
+                        @Model.Stats.TotalBooks, 
+                        @Model.Stats.TotalReaders, 
+                        @Model.Stats.ActiveBorrows, 
+                        @Model.Stats.OverdueBorrows
+                    ],
+                    backgroundColor: [
+                        '#0d6efd', '#198754', '#ffc107', '#dc3545'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15 } }
+                },
+                cutout: '70%'
+            }
+        });
+    </script>
+}

@@ -108,6 +108,25 @@ public class BorrowSlipService : IBorrowSlipService
         if (reader.CardExpiredDate <= DateTime.UtcNow)
             throw new Exception($"Thẻ thư viện của độc giả {reader.FullName} đã hết hạn ({reader.CardExpiredDate:dd/MM/yyyy}). Vui lòng gia hạn trước khi mượn.");
 
+        var borrowedAt = dto.BorrowedAt ?? DateTime.UtcNow;
+        var dueDate = dto.DueDate ?? borrowedAt.AddDays(14);
+
+        if (dueDate <= borrowedAt)
+            throw new Exception("Ngày trả sách không được nhỏ hơn hoặc bằng ngày mượn sách.");
+
+        if (borrowedAt.Date < DateTime.UtcNow.Date)
+            throw new Exception("Ngày mượn sách không được trong quá khứ.");
+
+        // Check for overdue books
+        var hasOverdue = await _ctx.BorrowSlips.AnyAsync(b => b.ReaderId == dto.ReaderId && b.Status == "Borrowing" && b.DueDate < DateTime.UtcNow);
+        if (hasOverdue)
+            throw new Exception("Độc giả đang có sách quá hạn chưa trả. Vui lòng trả sách trước khi mượn mới.");
+
+        // Check for unpaid fines
+        var hasUnpaidFines = await _ctx.FineSlips.AnyAsync(f => f.BorrowSlip.ReaderId == dto.ReaderId && f.Status == "Unpaid");
+        if (hasUnpaidFines)
+            throw new Exception("Độc giả đang có phí phạt chưa thanh toán. Vui lòng thanh toán trước khi mượn mới.");
+
         // Check books available
         foreach (var item in dto.Books)
         {
@@ -122,8 +141,8 @@ public class BorrowSlipService : IBorrowSlipService
             SlipCode    = $"BS-{DateTime.UtcNow:yyyyMMdd}-{Guid.NewGuid().ToString()[..6].ToUpper()}",
             ReaderId    = dto.ReaderId,
             LibrarianId = librarianId,
-            BorrowedAt  = dto.BorrowedAt ?? DateTime.UtcNow,
-            DueDate     = dto.DueDate ?? DateTime.UtcNow.AddDays(14),
+            BorrowedAt  = borrowedAt,
+            DueDate     = dueDate,
             Status      = "Borrowing"
         };
         await _borrowSlips.AddAsync(slip);
@@ -169,7 +188,10 @@ public class BorrowSlipService : IBorrowSlipService
         // Create fine slip if overdue
         if (isOverdue)
         {
-            var daysLate   = (DateTime.UtcNow - slip.DueDate).Days;
+            // Calculate days late based on calendar dates
+            var daysLate = (DateTime.UtcNow.Date - slip.DueDate.Date).Days;
+            if (daysLate <= 0) daysLate = 1; // If it's same day but late hour, charge 1 day
+            
             var fineAmount = daysLate * 5000m; // 5,000 VND per day
             var fine = new FineSlip
             {
@@ -179,6 +201,64 @@ public class BorrowSlipService : IBorrowSlipService
                 Status       = "Unpaid"
             };
             await _ctx.FineSlips.AddAsync(fine);
+        }
+
+        await _ctx.SaveChangesAsync();
+    }
+
+    public async Task RenewAsync(int slipId)
+    {
+        var slip = await _ctx.BorrowSlips
+            .FirstOrDefaultAsync(b => b.Id == slipId)
+            ?? throw new Exception("Không tìm thấy phiếu mượn.");
+
+        if (slip.Status != "Borrowing")
+            throw new Exception("Chỉ có thể gia hạn sách đang trong trạng thái mượn.");
+
+        // Extend DueDate by 7 days from the current DueDate
+        slip.DueDate = slip.DueDate.AddDays(7);
+        
+        await _ctx.SaveChangesAsync();
+    }
+
+    public async Task SynchronizeStatusesAsync()
+    {
+        var now = DateTime.UtcNow;
+        var slipsToUpdate = await _ctx.BorrowSlips
+            .Include(b => b.FineSlip)
+            .Where(b => (b.Status == "Borrowing" && b.DueDate < now) || (b.Status == "Overdue" && b.ReturnedAt == null))
+            .ToListAsync();
+
+        if (!slipsToUpdate.Any()) return;
+
+        foreach (var slip in slipsToUpdate)
+        {
+            if (slip.Status == "Borrowing")
+            {
+                slip.Status = "Overdue";
+            }
+
+            var daysLate = (now.Date - slip.DueDate.Date).Days;
+            if (daysLate <= 0) daysLate = 1;
+            var currentFineAmount = daysLate * 5000m;
+
+            if (slip.FineSlip == null)
+            {
+                var fine = new FineSlip
+                {
+                    BorrowSlipId = slip.Id,
+                    FineAmount = currentFineAmount,
+                    Reason = "Overdue",
+                    Status = "Unpaid"
+                };
+                _ctx.FineSlips.Add(fine);
+                slip.FineSlip = fine; // Link navigation property explicitly
+            }
+            else if (slip.FineSlip.Status == "Unpaid" && slip.FineSlip.FineAmount < currentFineAmount)
+            {
+                slip.FineSlip.FineAmount = currentFineAmount;
+                slip.FineSlip.Reason = $"Overdue by {daysLate} day(s)";
+            }
         }
 
         await _ctx.SaveChangesAsync();

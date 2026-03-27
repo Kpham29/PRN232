@@ -31,6 +31,12 @@ public class AuthService : IAuthService
         if (await _accounts.GetByEmailAsync(dto.Email) != null)
             throw new Exception("Email already exists");
 
+        if (dto.DateOfBirth > DateTime.UtcNow.AddYears(-6))
+            throw new Exception("Người dùng phải từ 6 tuổi trở lên.");
+
+        if (string.IsNullOrEmpty(dto.Phone) || dto.Phone.Length != 10 || !dto.Phone.All(char.IsDigit))
+            throw new Exception("Số điện thoại phải có đúng 10 chữ số.");
+
         var account = new Account
         {
             FullName = dto.FullName,
